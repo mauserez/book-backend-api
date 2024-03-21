@@ -20,7 +20,7 @@ export class AuthController extends Controller {
 		console.log("Инициализация AuthController");
 	}
 
-	async login(login: string, pass: string) {
+	/* async login(login: string, pass: string) {
 		const user = await this.authService.getUser(login);
 		// проверяем соответствие логин пароль  и если все ок выдаем токен
 		if (!user.success)
@@ -61,5 +61,5 @@ export class AuthController extends Controller {
 			{ expiresIn: "24h" }
 		);
 		return { message: "Успешно!", token: token };
-	}
+	} */
 }

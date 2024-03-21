@@ -1,9 +1,7 @@
 import { Router, Request, Response } from "express";
 import { IRatingPayload } from "../types/rating/types";
+import { BooksService, AuthService } from "../services/_index";
 
-// import { raitingPlaceholder } from './interfaces/placeholders';
-import { BooksService } from "../services/BooksService";
-import { AuthService } from "../services/AuthService";
 export class RaitingRouter {
 	private _router: Router;
 
@@ -13,16 +11,12 @@ export class RaitingRouter {
 		// проверка авторизации
 
 		// добавить рейтинг
-		// this._router.post('/rating', (
-		//     req: Request<{}, {}, IRaitingPayload[]>,
-		//     res: Response
-		//     ) => {
-		//      res.send(raitingPlaceholder)
-		// })
-	}
-
-	get router() {
-		return this._router;
+		this._router.post(
+			"/rating",
+			(req: Request<{}, {}, IRatingPayload[]>, res: Response) => {
+				res.send(null);
+			}
+		);
 	}
 }
 

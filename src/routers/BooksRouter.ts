@@ -1,5 +1,9 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { IBookPayload } from "./../types/book/types";
+import {
+	IBooksPayload,
+	IBookEditPayload,
+	IBookCreatePayload,
+} from "./../types/book/types";
 import { BooksController } from "../controllers/BooksController";
 
 export class BooksRouter {
@@ -11,17 +15,7 @@ export class BooksRouter {
 		this._router.get(
 			"/books",
 			async (
-				req: Request<
-					{},
-					{},
-					{},
-					{
-						perPage: boolean;
-						page: number;
-						categories: string[];
-						limit: number;
-					}
-				>,
+				req: Request<{}, {}, {}, IBooksPayload>,
 				res: Response,
 				next: NextFunction
 			) => {
@@ -30,11 +24,11 @@ export class BooksRouter {
 			}
 		);
 
-		//загрузить книги массово
+		//создать новую книгу
 		this._router.post(
 			"/books",
-			async (req: Request<{}, {}, IBookPayload[]>, res: Response, next) => {
-				const book = await booksController.postBooks(req, res, next);
+			async (req: Request<{}, {}, IBookCreatePayload>, res: Response, next) => {
+				const book = await booksController.postBook(req, res, next);
 				res.send(book);
 			}
 		);
@@ -52,7 +46,7 @@ export class BooksRouter {
 		this._router.patch(
 			"/book/:id",
 			async (
-				req: Request<{ id: string }, {}, IBookPayload>,
+				req: Request<{ id: string }, {}, IBookEditPayload>,
 				res: Response,
 				next: NextFunction
 			) => {
@@ -69,8 +63,8 @@ export class BooksRouter {
 				res: Response,
 				next: NextFunction
 			) => {
-				const succes = await booksController.deleteBook(req, res, next);
-				res.send(succes);
+				const result = await booksController.deleteBook(req, res, next);
+				res.send(result);
 			}
 		);
 	}
@@ -79,22 +73,3 @@ export class BooksRouter {
 		return this._router;
 	}
 }
-
-// GET /api/v1/books — получение списка книг. Принимает следующие параметры строки:
-
-// perPage — количество выводимых книг в запросе.
-// page — постраничный вывод книг.
-// category — категория выводимых книг (может принимать массив сразу с несколькими категориями).
-
-// POST /api/v1/books — добавление книги. В теле запроса принимает данные для книги:
-
-// Название книги;
-// Год выпуска;
-// Категории, к которым относится книга;
-// Автор;
-// Стоимость в определенной валюте;
-// Рейтинг книги на основе пользовательских оценок.
-
-// PUT /api/v1/books/<bookId> — редактирование книги. В теле запроса можно отправить произвольное количество полей, которые необходимо отредактировать.
-
-// DELETE /api/v1/books/<bookId> — удаление книги по идентификатору.

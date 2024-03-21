@@ -1,5 +1,5 @@
 export interface User {
-	id: number;
+	id: string;
 	name: string;
 	description: string;
 	email: string;
@@ -15,10 +15,10 @@ export interface IUserPayload {
 }
 
 /////////////////// DataBase records
-export interface UserRecord {
-	id: number;
-	name: string;
-	description: string;
-	email: string;
-	pass: string;
+export interface UserRow {
+	id: string;
+	name: string | null;
+	description: string | null;
+	login: string;
+	password: string;
 }

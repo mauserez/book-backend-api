@@ -1,4 +1,4 @@
-import { User, UserRecord } from "../types/user/types";
+import { User, UserRow } from "../types/user/types";
 import { UserRepository } from "../repositories/_index";
 
 export class UserService {
@@ -8,7 +8,7 @@ export class UserService {
 		this.userRepository = new UserRepository();
 	}
 
-	public async getUser(
+	/* public async getUser(
 		email: string
 	): Promise<{ success: boolean; result: User }> {
 		const resultUserRecord = await this.userRepository.getUserRecordByEMail(
@@ -29,5 +29,5 @@ export class UserService {
 		};
 
 		return { success: true, result: user };
-	}
+	} */
 }

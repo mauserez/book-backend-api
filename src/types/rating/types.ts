@@ -1,17 +1,17 @@
 import { User } from "../user/types";
-import { Book } from "../book/types";
+import { IBook } from "../book/types";
 
 export interface Rating {
 	id: string;
 	user: User;
-	book: Book;
+	book: IBook;
 	value: number;
 }
 
 export interface IRatingPayload {
 	id: string;
 	user: string;
-	book: Book;
+	book: IBook;
 	rating: number;
 }
 

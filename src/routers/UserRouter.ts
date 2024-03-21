@@ -4,12 +4,13 @@ import { AuthController } from "../controllers/AuthController";
 export class UserRouter {
 	private _router: Router;
 	private _authController: AuthController;
+
 	constructor(authController: AuthController) {
 		this._authController = authController;
 		this._router = Router();
 
 		// логин
-		this._router.post(
+		/* this._router.post(
 			"/login",
 			async (
 				req: Request<{}, {}, { login: string; pass: string }>,
@@ -21,10 +22,10 @@ export class UserRouter {
 				);
 				return res.send(token);
 			}
-		);
+		); */
 
 		// регистрация
-		this._router.post(
+		/* this._router.post(
 			"/register",
 			async (
 				req: Request<
@@ -43,7 +44,7 @@ export class UserRouter {
 				);
 				res.send(token);
 			}
-		);
+		); */
 
 		// Проверка сервера
 		this._router.get("/", async (req: Request<{}, {}, {}>, res: Response) => {
@@ -79,6 +80,7 @@ export class UserRouter {
 		//         res.send(userPlaceholder)
 		//    })
 	}
+
 	get router() {
 		return this._router;
 	}

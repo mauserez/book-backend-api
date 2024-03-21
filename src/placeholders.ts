@@ -1,17 +1,15 @@
-import { Book, Category } from "./types/book/types";
+import { IBook } from "./types/book/types";
+import { Category } from "./types/category/types";
 
-export const booksPlaceholder: Book = {
+export const booksPlaceholder: IBook = {
 	id: "1",
 	name: "book1",
-	categories: [],
 	language: "RU",
 	price: 111,
-	currency: { id: "11", name: "USD" },
-	published: 2000,
-	authors: [],
-	rating: 1,
+	currencyAcronym: "USD",
 	description: "",
-	esteemes: 1,
+	ratingCount: 50,
+	ratingValue: 77,
 };
 
 export const categoryPlaceholder: Category = { "id": "1", "name": "user" };

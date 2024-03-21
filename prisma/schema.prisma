@@ -1,0 +1,116 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model author {
+  id           String         @id @db.VarChar
+  first_name   String         @db.VarChar
+  last_name    String         @db.VarChar
+  years_active String?        @db.VarChar
+  created_at   DateTime       @default(now()) @db.Timestamptz(6)
+  book_authors book_authors[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model book {
+  id              String            @id @db.VarChar
+  name            String            @db.VarChar
+  price           Decimal           @db.Decimal
+  language        String?           @default("RU") @db.VarChar
+  currency_id     String            @db.VarChar
+  created_at      DateTime          @default(now()) @db.Timestamptz(6)
+  description     String?
+  currency        currency          @relation(fields: [currency_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_book_currency_id_fkey")
+  book_authors    book_authors[]
+  book_categories book_categories[]
+  user_books      user_books[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model book_authors {
+  id         BigInt   @id @default(autoincrement())
+  author_id  String   @db.VarChar
+  book_id    String   @db.VarChar
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  author     author   @relation(fields: [author_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "public_book_authors_author_id_fkey")
+  book       book     @relation(fields: [book_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "public_book_authors_book_id_fkey")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model book_categories {
+  id          String   @id @unique @db.VarChar
+  book_id     String   @db.VarChar
+  category_id String   @db.VarChar
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  book        book     @relation(fields: [book_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "public_book_categories_book_id_fkey")
+  category    category @relation(fields: [category_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "public_book_categories_category_id_fkey")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model category {
+  id              String            @id @db.VarChar
+  name            String            @db.VarChar
+  created_at      DateTime          @default(now()) @db.Timestamptz(6)
+  book_categories book_categories[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model currency {
+  id               String   @id @db.VarChar
+  currency_name    String   @db.VarChar
+  currency_acronym String   @db.VarChar
+  created_at       DateTime @default(now()) @db.Timestamptz(6)
+  book             book[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model rating {
+  id         String   @id @db.VarChar
+  value      Decimal? @db.Decimal
+  comment    String?
+  book_id    String   @db.VarChar
+  user_id    String?  @db.VarChar
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  user       user?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "public_rating_user_id_fkey")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user {
+  id          String       @id @db.VarChar
+  name        String?      @db.VarChar
+  description String?      @db.VarChar
+  login       String       @db.VarChar
+  password    String       @db.VarChar
+  created_at  DateTime     @default(now()) @db.Timestamptz(6)
+  rating      rating[]
+  user_books  user_books[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_books {
+  id         String   @id @db.VarChar
+  user_id    String   @db.VarChar
+  book_id    String   @db.VarChar
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  book       book     @relation(fields: [book_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "public_user_books_book_id_fkey")
+  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "public_user_books_user_id_fkey")
+}
+
+view book_view {
+  id               String    @id @db.VarChar
+  name             String    @db.VarChar
+  price            Decimal   @db.Decimal
+  language         String?   @db.VarChar
+  description      String
+  currency_acronym String    @db.VarChar
+  rating_count     BigInt?
+  rating_value     Decimal?  @db.Decimal
+  created_at       DateTime @db.Timestamptz(6)
+}

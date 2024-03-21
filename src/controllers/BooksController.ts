@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { Controller } from "./Controller";
-import { BooksService } from "../services/BooksService";
-import { Book, IBookPayload } from "../types/book/types";
-// класс преобразует записи полученные из базы в обьекты программы
+import { BooksService } from "../services/_index";
+import {
+	IBookEditPayload,
+	IBookCreatePayload,
+	IBooksPayload,
+} from "../types/book/types";
+
+import { result } from "../helpers/resultHelper";
+import { v4 as uuidv4 } from "uuid";
 
 export class BooksController extends Controller {
 	private booksService: BooksService;
@@ -14,28 +20,25 @@ export class BooksController extends Controller {
 	}
 
 	async getBooks(
-		req: Request<
-			{},
-			{},
-			{},
-			{ perPage: boolean; page: number; categories: string[]; limit: number }
-		>,
+		req: Request<{}, {}, {}, IBooksPayload>,
 		res: Response,
 		next: NextFunction
 	) {
-		let limit = !req.query.limit ? undefined : Number(req.query.limit);
-		let page = !req.query.page ? undefined : Number(req.query.page);
-		let perPage = !req.query.perPage ? undefined : Boolean(req.query.perPage);
-		let categories = !req.query.categories
-			? []
-			: String(req.query.categories).split(",");
+		const request = req.query;
 
-		const books = await this.booksService.getBooks(
-			perPage,
-			page,
-			categories,
-			limit
-		);
+		const limit = !request.limit ? 10 : Number(request.limit);
+		const page = !request.page ? 1 : Number(request.page);
+		const perPage = !!request.perPage;
+		const category = !req.query.category ? [] : req.query.category;
+
+		const options = {
+			category: category,
+			limit: limit,
+			page: page,
+			perPage: perPage,
+		};
+
+		const books = await this.booksService.getBooks(options);
 
 		return books;
 	}
@@ -45,34 +48,32 @@ export class BooksController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		let id = !req.params.id ? undefined : Number(req.params.id);
-		if (id === undefined) {
-			return { success: false, result: <Book>{} };
-		} else {
-			const book = await this.booksService.getBookById(id);
+		const id = !req.params.id ? undefined : req.params.id;
 
+		if (id === undefined) {
+			return result(false, "Book id is empty");
+		} else {
+			const book = await this.booksService.getBook(id);
 			return book;
 		}
 	}
 
-	async postBooks(
-		req: Request<{}, {}, IBookPayload[]>,
+	async postBook(
+		req: Request<{}, {}, IBookCreatePayload>,
 		res: Response,
 		next: NextFunction
 	) {
-		const book = await this.booksService.createBooks(req.body);
+		const newBookPayload = { ...req.body, id: uuidv4() };
+		const book = await this.booksService.editBook(newBookPayload);
 		return book;
 	}
 
 	async patchBook(
-		req: Request<{ id: string }, {}, IBookPayload>,
+		req: Request<{ id: string }, {}, IBookEditPayload>,
 		res: Response,
 		next: NextFunction
 	) {
-		const book = await this.booksService.editBook(
-			req.params.id,
-			req.body
-		);
+		const book = await this.booksService.editBook(req.body);
 
 		return book;
 	}
@@ -82,9 +83,6 @@ export class BooksController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		const success = await this.booksService.RemoveBookById(
-			Number(req.params.id)
-		);
-		return success;
+		return await this.booksService.deleteBook(req.params.id);
 	}
 }

@@ -1,77 +1,60 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { Author } from "../author/types";
+import { Category } from "../category/types";
+import { Currency } from "../currency/types";
+import { User } from "../user/types";
 
-export interface Book {
+export interface IBookRow {
 	id: string;
 	name: string;
-	categories: Category[];
-	language: string;
 	price: number;
-	currency: Currency | undefined;
-	published: number;
-	authors: Author[];
-	rating: number;
+	language: string | null;
 	description: string;
-	esteemes: number;
+	currency_acronym: number;
+	rating_count: number | Decimal | null;
+	rating_value: number | Decimal | null;
 }
 
-export interface Currency {
+export interface IBook {
 	id: string;
 	name: string;
-}
-
-export interface Category {
-	id: string;
-	name: string;
-}
-
-export interface IBookPayload {
-	id: string;
-	name: string;
-	categories: string[];
-	language: string;
 	price: number;
-	currency: string;
-	published: number;
-	authors: string[];
-	rating: number;
-	user: string;
-	description: string;
-}
-
-export interface ICategoryPayload {
-	id: string;
-	name: string;
-}
-
-export interface CurrencyRecord {
-	id: string;
-	name: string;
-}
-
-export interface CategoryRecord {
-	id: string;
-	name: string;
-}
-
-export interface BookRecord {
-	id: string;
-	name: string;
 	language: string;
-	price: number;
-	published: number;
-	currency: number;
 	description: string;
-	created_at: Date;
+	currencyAcronym: Currency["name"];
+	ratingCount: number;
+	ratingValue: number;
 }
 
-export interface Book_AuthorRecord {
+export interface IBookEditPayload {
 	id: string;
-	id_book: string;
-	id_author: string;
+	name: string;
+	price: number;
+	language: string;
+	description: string;
+	currency_id: string;
+	authors: Author["id"][];
+	categories: Category["id"][];
+	user: User["id"];
 }
 
-export interface Category_BookRecord {
+export interface IBooksPayload {
+	perPage: boolean;
+	page: number;
+	author: Author["id"][];
+	category: Category["id"][];
+	limit: number;
+}
+
+export type IBookCreatePayload = Omit<IBookEditPayload, "id">;
+
+export interface IBookAuthorPayload {
+	book_id: string;
+	author_id: string;
+}
+
+export interface IBookCategoryPayload {
 	id: string;
-	id_book: string;
-	id_category: string;
+	book_id: string;
+	category_id: string;
 }
