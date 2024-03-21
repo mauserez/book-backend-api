@@ -1,22 +1,12 @@
-import {
-	IBook,
-	IBookCreatePayload,
-	IBookEditPayload,
-	IBookRow,
-} from "../types/book/types";
-
+import { IBookEditPayload } from "../types/book/types";
 import { BookRepository } from "../repositories/_index";
-import { UserService } from "./_index";
-import { Category } from "../types/category/types";
 import { GetBooksOptions } from "../repositories/BookRepository";
 
-export class BooksService {
+export class BookService {
 	bookRepository: BookRepository;
-	userService: UserService;
 
 	constructor() {
 		this.bookRepository = new BookRepository();
-		this.userService = new UserService();
 	}
 
 	public async getBook(id: string) {
@@ -37,7 +27,6 @@ export class BooksService {
 	}
 
 	public async getBooks(options: GetBooksOptions) {
-		const books = await this.bookRepository.getBooks(options);
-		return { success: true, result: books };
+		return await this.bookRepository.getBooks(options);
 	}
 }

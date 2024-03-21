@@ -1,7 +1,7 @@
 import cors from "cors";
 import express, { Express } from "express";
 
-import { BooksController, AuthController } from "./controllers/_index";
+import { BookController, AuthController } from "./controllers/_index";
 import { BooksRouter, UserRouter } from "./routers/_index";
 import { LoggerMiddleware } from "./middlewares/_index";
 
@@ -13,21 +13,21 @@ export class App {
 	private readonly port: number;
 
 	constructor(
-		booksController: BooksController,
+		bookController: BookController,
 		authController: AuthController
 	) {
 		this.app = express();
 		this.port = Number(process.env.APP_PORT) || 5001;
-		this.booksRouter = new BooksRouter(booksController);
+		this.booksRouter = new BooksRouter(bookController);
 		this.userRouter = new UserRouter(authController);
 		this._loggerMiddleware = new LoggerMiddleware();
 	}
 
 	private configureRoutes() {
-		this.app.use("/api/v1", this.userRouter.router);
+		//this.app.use("/api/v1", this.userRouter.router);
 		this.app.use(
-			"/api/v1/books",
-			this._loggerMiddleware.handle,
+			"/api/v1",
+			//this._loggerMiddleware.handle,
 			this.booksRouter.router
 		);
 	}

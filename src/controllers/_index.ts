@@ -1,2 +1,3 @@
 export { AuthController } from "./AuthController";
-export { BooksController } from "./BooksController";
+export { BookController } from "./BookController";
+export { CategoryController } from "./CategoryController";

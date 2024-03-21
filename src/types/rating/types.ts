@@ -1,23 +1,18 @@
 import { User } from "../user/types";
-import { IBook } from "../book/types";
+import { IBookRow } from "../book/types";
 
-export interface Rating {
-	id: string;
-	user: User;
-	book: IBook;
-	value: number;
-}
+export interface IRatingRow {}
 
 export interface IRatingPayload {
 	id: string;
-	user: string;
-	book: IBook;
+	user_id: string;
+	book_id: IBookRow["id"];
 	rating: number;
 }
 
 export interface RatingRecord {
 	id: string;
-	id_book: string;
-	id_user: string;
+	book_id: string;
+	user_id: string;
 	value: number;
 }

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Controller } from "./Controller";
-import { BooksService } from "../services/_index";
+import { BookService } from "../services/_index";
 import {
 	IBookEditPayload,
 	IBookCreatePayload,
@@ -10,12 +10,12 @@ import {
 import { result } from "../helpers/resultHelper";
 import { v4 as uuidv4 } from "uuid";
 
-export class BooksController extends Controller {
-	private booksService: BooksService;
+export class BookController extends Controller {
+	private bookService: BookService;
 
-	constructor(booksService: BooksService) {
+	constructor(bookService: BookService) {
 		super();
-		this.booksService = booksService;
+		this.bookService = bookService;
 		console.log("Инициализация BooksController");
 	}
 
@@ -38,7 +38,7 @@ export class BooksController extends Controller {
 			perPage: perPage,
 		};
 
-		const books = await this.booksService.getBooks(options);
+		const books = await this.bookService.getBooks(options);
 
 		return books;
 	}
@@ -53,7 +53,7 @@ export class BooksController extends Controller {
 		if (id === undefined) {
 			return result(false, "Book id is empty");
 		} else {
-			const book = await this.booksService.getBook(id);
+			const book = await this.bookService.getBook(id);
 			return book;
 		}
 	}
@@ -64,7 +64,7 @@ export class BooksController extends Controller {
 		next: NextFunction
 	) {
 		const newBookPayload = { ...req.body, id: uuidv4() };
-		const book = await this.booksService.editBook(newBookPayload);
+		const book = await this.bookService.editBook(newBookPayload);
 		return book;
 	}
 
@@ -73,7 +73,7 @@ export class BooksController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		const book = await this.booksService.editBook(req.body);
+		const book = await this.bookService.editBook(req.body);
 
 		return book;
 	}
@@ -83,6 +83,6 @@ export class BooksController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		return await this.booksService.deleteBook(req.params.id);
+		return await this.bookService.deleteBook(req.params.id);
 	}
 }

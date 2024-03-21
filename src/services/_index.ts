@@ -1,3 +1,4 @@
 export { AuthService } from "./AuthService";
-export { BooksService } from "./BooksService";
-export { UserService } from "./UserService";
+export { BookService } from "./BookService";
+export { CategoryService } from "./CategoryService";
+//export { UserService } from "./UserService";

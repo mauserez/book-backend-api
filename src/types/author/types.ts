@@ -1,11 +1,4 @@
-export interface Author {
-	id: string;
-	name: string;
-	birth: number;
-	death: number;
-}
-
-export interface AuthorRecord {
+export interface IAuthorRow {
 	id: string;
 	name: string;
 	birth: number;

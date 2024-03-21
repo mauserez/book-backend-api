@@ -5,14 +5,12 @@ import {
 	IBookCategoryPayload,
 } from "../types/book/types";
 
-import { Category } from "../types/category/types";
-
-import { v4 as uuidv4 } from "uuid";
+import { ICategoryRow } from "../types/category/types";
 import { errorText, result } from "../helpers/resultHelper";
 import prisma from "../prisma";
 
 export type GetBooksOptions = {
-	category: Category["id"][];
+	category: ICategoryRow["id"][];
 	limit: number;
 	page: number;
 	perPage: boolean;
@@ -25,11 +23,7 @@ export class BookRepository {
 		try {
 			const book: any = await prisma.book_view.findMany({
 				//where: { id: bookId },
-				orderBy: [
-					{
-						
-					}
-				],
+				orderBy: [{}],
 			});
 
 			return result<IBookRow | null>(true, book);
@@ -68,7 +62,6 @@ export class BookRepository {
 			const categoryIds = record.categories;
 			const newBookCategories = categoryIds.map((categoryId) => {
 				return <IBookCategoryPayload>{
-					id: uuidv4(),
 					category_id: categoryId,
 					book_id: bookId,
 				};

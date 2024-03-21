@@ -1,14 +1,11 @@
-export interface Category {
+export interface ICategoryRow {
 	id: string;
 	name: string;
 }
 
-export interface CategoryRow {
+export interface ICategoryEditPayload {
 	id: string;
 	name: string;
 }
 
-export interface ICategoryPayload {
-	id: string;
-	name: string;
-}
+export type ICategoryCreatePayload = Omit<ICategoryEditPayload, "id">;

@@ -1,11 +1,11 @@
 import { Router, Request, Response } from "express";
 import { IRatingPayload } from "../types/rating/types";
-import { BooksService, AuthService } from "../services/_index";
+import { BookService, AuthService } from "../services/_index";
 
 export class RaitingRouter {
 	private _router: Router;
 
-	constructor(booksService: BooksService, authService: AuthService) {
+	constructor(bookService: BookService, authService: AuthService) {
 		this._router = Router();
 
 		// проверка авторизации

@@ -1,33 +1,31 @@
-import { User, UserRow } from "../types/user/types";
-import { UserRepository } from "../repositories/_index";
+import { ICategoryEditPayload } from "../types/category/types";
+import { CategoryRepository } from "../repositories/_index";
 
-export class UserService {
-	userRepository: UserRepository;
+export class CategoryService {
+	categoryRepository: CategoryRepository;
 
 	constructor() {
-		this.userRepository = new UserRepository();
+		this.categoryRepository = new CategoryRepository();
 	}
 
-	/* public async getUser(
-		email: string
-	): Promise<{ success: boolean; result: User }> {
-		const resultUserRecord = await this.userRepository.getUserRecordByEMail(
-			email
-		);
+	public async getCategory(id: string) {
+		const categoryResult = await this.categoryRepository.getCategory(id);
+		return categoryResult;
+	}
 
-		if (!resultUserRecord.success) {
-			return { success: false, result: <User>{} };
-		}
+	public async editCategory(categoryPayload: ICategoryEditPayload) {
+		return this.categoryRepository.saveCategory(categoryPayload);
+	}
 
-		const data: UserRecord = <UserRecord>resultUserRecord.result;
-		const user = <User>{
-			id: data.id,
-			name: data.name,
-			description: data.description,
-			email: data.email,
-			pass: data.pass,
-		};
+	public async createCategory(categoryPayload: ICategoryEditPayload) {
+		return this.categoryRepository.saveCategory(categoryPayload);
+	}
 
-		return { success: true, result: user };
-	} */
+	public async deleteCategory(id: string) {
+		return await this.categoryRepository.deleteCategory(id);
+	}
+
+	public async getCategories() {
+		return await this.categoryRepository.getCategories();
+	}
 }

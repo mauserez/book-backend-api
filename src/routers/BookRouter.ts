@@ -3,12 +3,12 @@ import {
 	IBooksPayload,
 	IBookEditPayload,
 	IBookCreatePayload,
-} from "./../types/book/types";
-import { BooksController } from "../controllers/BooksController";
+} from "../types/book/types";
+import { BookController } from "../controllers/BookController";
 
-export class BooksRouter {
+export class BookRouter {
 	private _router: Router;
-	constructor(booksController: BooksController) {
+	constructor(booksController: BookController) {
 		this._router = Router();
 
 		// получить список книг
@@ -24,16 +24,7 @@ export class BooksRouter {
 			}
 		);
 
-		//создать новую книгу
-		this._router.post(
-			"/books",
-			async (req: Request<{}, {}, IBookCreatePayload>, res: Response, next) => {
-				const book = await booksController.postBook(req, res, next);
-				res.send(book);
-			}
-		);
-
-		// получить книгу по id сделано
+		//получить книгу по id сделано
 		this._router.get(
 			"/book/:id",
 			async (req: Request<{ id: string }>, res, next) => {
@@ -42,7 +33,16 @@ export class BooksRouter {
 			}
 		);
 
-		// отредактировать книгу  сделано
+		//создать новую книгу
+		this._router.post(
+			"/book",
+			async (req: Request<{}, {}, IBookCreatePayload>, res: Response, next) => {
+				const book = await booksController.postBook(req, res, next);
+				res.send(book);
+			}
+		);
+
+		//отредактировать книгу  сделано
 		this._router.patch(
 			"/book/:id",
 			async (
@@ -55,7 +55,7 @@ export class BooksRouter {
 			}
 		);
 
-		// удалить книгу
+		//удалить книгу
 		this._router.delete(
 			"/book/:id",
 			async (
