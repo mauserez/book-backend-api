@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { Controller } from "./Controller";
+
 import { CategoryService } from "../services/_index";
 import {
 	ICategoryEditPayload,
 	ICategoryCreatePayload,
 } from "../types/category/types";
 
-import { result } from "../helpers/resultHelper";
+import { responseResult } from "../helpers/resultHelper";
 import { v4 as uuidv4 } from "uuid";
 
 export class CategoryController extends Controller {
@@ -15,7 +16,6 @@ export class CategoryController extends Controller {
 	constructor(categoryService: CategoryService) {
 		super();
 		this.categoryService = categoryService;
-		console.log("Инициализация CategoryController");
 	}
 
 	async getCategories(
@@ -23,8 +23,8 @@ export class CategoryController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		const categories = await this.categoryService.getCategories();
-		return categories;
+		const result = await this.categoryService.getCategories();
+		return result;
 	}
 
 	async getCategory(
@@ -35,10 +35,10 @@ export class CategoryController extends Controller {
 		const id = !req.params.id ? undefined : req.params.id;
 
 		if (id === undefined) {
-			return result(false, "Category id is empty");
+			return responseResult(false, "Category id is empty");
 		} else {
-			const category = await this.categoryService.getCategory(id);
-			return category;
+			const result = await this.categoryService.getCategory(id);
+			return result;
 		}
 	}
 
@@ -48,7 +48,10 @@ export class CategoryController extends Controller {
 		next: NextFunction
 	) {
 		const newCategoryPayload = { ...req.body, id: uuidv4() };
-		const result = await this.categoryService.editCategory(newCategoryPayload);
+
+		const result = await this.categoryService.createCategory(
+			newCategoryPayload
+		);
 		return result;
 	}
 
@@ -57,9 +60,8 @@ export class CategoryController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		const book = await this.categoryService.editCategory(req.body);
-
-		return book;
+		const result = await this.categoryService.editCategory(req.body);
+		return result;
 	}
 
 	async deleteCategory(
@@ -67,6 +69,7 @@ export class CategoryController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		return await this.categoryService.deleteCategory(req.params.id);
+		const result = await this.categoryService.deleteCategory(req.params.id);
+		return result;
 	}
 }

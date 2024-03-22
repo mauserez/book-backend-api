@@ -1,13 +1,15 @@
 export interface IAuthorRow {
 	id: string;
-	name: string;
-	birth: number;
-	death: number;
+	first_name: string;
+	last_name: string;
+	years_active: string | null;
 }
 
-export interface IAuthorPayload {
+export type IAuthorEditPayload = {
 	id: string;
-	name: string;
-	birth: number;
-	death: number;
-}
+	first_name?: string;
+	last_name?: string;
+	years_active?: string;
+};
+
+export type IAuthorCreatePayload = Omit<IAuthorRow, "id">;

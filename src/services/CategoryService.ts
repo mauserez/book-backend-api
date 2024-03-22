@@ -9,8 +9,7 @@ export class CategoryService {
 	}
 
 	public async getCategory(id: string) {
-		const categoryResult = await this.categoryRepository.getCategory(id);
-		return categoryResult;
+		return await this.categoryRepository.getCategory(id);
 	}
 
 	public async editCategory(categoryPayload: ICategoryEditPayload) {

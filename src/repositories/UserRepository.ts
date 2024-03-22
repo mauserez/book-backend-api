@@ -1,6 +1,6 @@
 import { UserRow } from "../types/user/types";
 import prisma from "../prisma";
-import { errorText, result } from "../helpers/resultHelper";
+import { errorText, responseResult } from "../helpers/resultHelper";
 
 export class UserRepository {
 	// поиск в юзера таблице по login
@@ -12,9 +12,9 @@ export class UserRepository {
 				},
 			});
 
-			result<UserRow | null>(true, user);
+			responseResult<UserRow | null>(true, user);
 		} catch (error) {
-			return result(false, errorText(error));
+			return responseResult(false, errorText(error));
 		}
 	}
 }

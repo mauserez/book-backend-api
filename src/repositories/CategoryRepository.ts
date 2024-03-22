@@ -1,27 +1,26 @@
 import { ICategoryEditPayload, ICategoryRow } from "../types/category/types";
-import { v4 as uuidv4 } from "uuid";
-import { errorText, result } from "../helpers/resultHelper";
+import { errorText, responseResult } from "../helpers/resultHelper";
 import prisma from "../prisma";
 
 export class CategoryRepository {
 	public async getCategories() {
 		try {
 			const categories = await prisma.category.findMany();
-			return result<ICategoryRow[] | null>(true, categories);
+			return responseResult<ICategoryRow[] | null>(true, categories);
 		} catch (error) {
-			return result(false, errorText(error));
+			return responseResult(false, errorText(error));
 		}
 	}
 
 	public async getCategory(categoryId: string) {
 		try {
-			const category = await prisma.book_view.findUnique({
+			const category = await prisma.category.findUnique({
 				where: { id: categoryId },
 			});
 
-			return result<ICategoryRow | null>(true, category);
+			return responseResult<ICategoryRow | null>(true, category);
 		} catch (error) {
-			return result(false, errorText(error));
+			return responseResult(false, errorText(error));
 		}
 	}
 
@@ -37,23 +36,23 @@ export class CategoryRepository {
 				create: category,
 			});
 
-			return result(true, "Success");
+			return responseResult(true, "Saved");
 		} catch (error) {
-			return result(false, errorText(error));
+			return responseResult(false, errorText(error));
 		}
 	}
 
 	public async deleteCategory(categoryId: string) {
 		try {
-			await prisma.book.delete({
+			await prisma.category.delete({
 				where: {
 					id: categoryId,
 				},
 			});
 
-			return result(true, "Success");
+			return responseResult(true, "Deleted");
 		} catch (error) {
-			return result(false, errorText(error));
+			return responseResult(false, errorText(error));
 		}
 	}
 }

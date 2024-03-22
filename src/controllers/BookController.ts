@@ -7,8 +7,9 @@ import {
 	IBooksPayload,
 } from "../types/book/types";
 
-import { result } from "../helpers/resultHelper";
+import { responseResult } from "../helpers/resultHelper";
 import { v4 as uuidv4 } from "uuid";
+import { hasEmptyFields } from "../helpers/objectHelper";
 
 export class BookController extends Controller {
 	private bookService: BookService;
@@ -48,14 +49,12 @@ export class BookController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		const id = !req.params.id ? undefined : req.params.id;
-
-		if (id === undefined) {
-			return result(false, "Book id is empty");
-		} else {
-			const book = await this.bookService.getBook(id);
-			return book;
+		if (!req.params.id) {
+			return responseResult(false, "Book id is empty");
 		}
+
+		const book = await this.bookService.getBook(req.params.id);
+		return book;
 	}
 
 	async postBook(
@@ -63,9 +62,16 @@ export class BookController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
+		let key: keyof typeof req.body;
+		for (key in req.body) {
+			if (!req.body[key]) {
+				return responseResult(false, `${key} is empty`);
+			}
+		}
+
 		const newBookPayload = { ...req.body, id: uuidv4() };
-		const book = await this.bookService.editBook(newBookPayload);
-		return book;
+		const result = await this.bookService.createBook(newBookPayload);
+		return result;
 	}
 
 	async patchBook(

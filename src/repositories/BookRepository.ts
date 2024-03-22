@@ -3,10 +3,12 @@ import {
 	IBookAuthorPayload,
 	IBookEditPayload,
 	IBookCategoryPayload,
+	IBookCreatePayload,
 } from "../types/book/types";
 
 import { ICategoryRow } from "../types/category/types";
-import { errorText, result } from "../helpers/resultHelper";
+import { errorText, responseResult } from "../helpers/resultHelper";
+import { v4 as uuidv4 } from "uuid";
 import prisma from "../prisma";
 
 export type GetBooksOptions = {
@@ -26,9 +28,9 @@ export class BookRepository {
 				orderBy: [{}],
 			});
 
-			return result<IBookRow | null>(true, book);
+			return responseResult<IBookRow | null>(true, book);
 		} catch (error) {
-			return result(false, errorText(error));
+			return responseResult(false, errorText(error));
 		}
 	}
 
@@ -38,43 +40,29 @@ export class BookRepository {
 				where: { id: bookId },
 			});
 
-			return result<IBookRow | null>(true, book);
+			return responseResult<IBookRow | null>(true, book);
 		} catch (error) {
-			return result(false, errorText(error));
+			return responseResult(false, errorText(error));
 		}
 	}
 
-	public async saveBook(record: IBookEditPayload) {
-		if (!record.authors.length || !record.categories.length) {
-			return result(false, "Empty authors or categories");
+	public async createBook(newBook: IBookCreatePayload) {
+		if (!newBook.author?.length || !newBook.category?.length) {
+			return responseResult(false, "Empty authors or categories");
 		}
 
 		try {
-			const bookId = record.id;
-			const authorIds = record.authors;
-			const newBookAuthors = authorIds.map((authorId) => {
-				return <IBookAuthorPayload>{
-					author_id: authorId,
-					book_id: bookId,
-				};
-			});
+			const bookId = uuidv4();
+			const newBookAuthors = await this.collectAuthors(bookId, newBook.author);
+			const newBookCategories = await this.collectCategories(
+				bookId,
+				newBook.category
+			);
 
-			const categoryIds = record.categories;
-			const newBookCategories = categoryIds.map((categoryId) => {
-				return <IBookCategoryPayload>{
-					category_id: categoryId,
-					book_id: bookId,
-				};
-			});
+			const book = { ...newBook, id: bookId };
 
-			const [upsert] = await prisma.$transaction([
-				prisma.book.upsert({
-					where: {
-						id: bookId,
-					},
-					update: record,
-					create: record,
-				}),
+			await prisma.$transaction([
+				prisma.book.create({ data: book }),
 				prisma.book_authors.deleteMany({
 					where: {
 						book_id: bookId,
@@ -93,10 +81,107 @@ export class BookRepository {
 				}),
 			]);
 
-			return result(true, "Success");
+			return responseResult(true, "Saved");
 		} catch (error) {
-			return result(false, errorText(error));
+			return responseResult(false, errorText(error));
 		}
+	}
+
+	public async editBook(record: IBookEditPayload) {
+		if (!record.id) {
+			return responseResult(false, "Empty id");
+		}
+
+		try {
+			const bookId = record.id;
+			const authorIds = record.author;
+
+			await prisma.book.update({
+				where: {
+					id: record.id,
+				},
+				data: record,
+			});
+
+			if (authorIds) {
+				const newBookAuthors = authorIds.map((authorId) => {
+					return <IBookAuthorPayload>{
+						author_id: authorId,
+						book_id: bookId,
+					};
+				});
+
+				await prisma.$transaction([
+					prisma.book_authors.deleteMany({
+						where: {
+							book_id: bookId,
+						},
+					}),
+
+					prisma.book_authors.createMany({
+						data: newBookAuthors,
+					}),
+				]);
+			}
+
+			const categoryIds = record.category;
+			if (categoryIds) {
+				const newBookCategories = categoryIds.map((categoryId) => {
+					return <IBookCategoryPayload>{
+						category_id: categoryId,
+						book_id: bookId,
+					};
+				});
+
+				await prisma.$transaction([
+					prisma.book_categories.deleteMany({
+						where: {
+							book_id: bookId,
+						},
+					}),
+
+					prisma.book_categories.createMany({
+						data: newBookCategories,
+					}),
+				]);
+			}
+
+			return responseResult(true, "Saved");
+		} catch (error) {
+			return responseResult(false, errorText(error));
+		}
+	}
+
+	private async collectAuthors(
+		bookId: string,
+		authorIds: IBookCreatePayload["author"]
+	) {
+		if (!authorIds) {
+			return [];
+		}
+
+		return authorIds.map((authorId) => {
+			return <IBookAuthorPayload>{
+				author_id: authorId,
+				book_id: bookId,
+			};
+		});
+	}
+
+	private async collectCategories(
+		bookId: string,
+		categoryIds: IBookCreatePayload["category"]
+	) {
+		if (!categoryIds) {
+			return [];
+		}
+
+		return categoryIds.map((categoryId) => {
+			return <IBookCategoryPayload>{
+				category_id: categoryId,
+				book_id: bookId,
+			};
+		});
 	}
 
 	public async deleteBook(bookId: string) {
@@ -107,9 +192,9 @@ export class BookRepository {
 				},
 			});
 
-			return result(true, "Success");
+			return responseResult(true, "Deleted");
 		} catch (error) {
-			return result(false, errorText(error));
+			return responseResult(false, errorText(error));
 		}
 	}
 }

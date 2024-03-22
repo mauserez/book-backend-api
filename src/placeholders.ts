@@ -1,5 +1,5 @@
 import { IBookRow } from "./types/book/types";
-import { Category } from "./types/category/types";
+//import { Category } from "./types/category/types";
 
 export const booksPlaceholder: IBookRow = {
 	id: "1",
@@ -12,5 +12,5 @@ export const booksPlaceholder: IBookRow = {
 	rating_value: 77,
 };
 
-export const categoryPlaceholder: Category = { "id": "1", "name": "user" };
+//export const categoryPlaceholder: Category = { "id": "1", "name": "user" };
 export const token = "34154w765e68fpy9g";

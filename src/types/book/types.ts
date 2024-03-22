@@ -16,17 +16,26 @@ export interface IBookRow {
 
 export interface IBookEditPayload {
 	id: string;
+	name?: string;
+	price?: number;
+	language?: string;
+	description?: string;
+	currency_id?: string;
+	author?: IAuthorRow["id"][];
+	category?: ICategoryRow["id"][];
+	user: User["id"];
+}
+
+export interface IBookCreatePayload {
 	name: string;
 	price: number;
 	language: string;
 	description: string;
 	currency_id: string;
-	authors: IAuthorRow["id"][];
-	categories: ICategoryRow["id"][];
+	author: IAuthorRow["id"][];
+	category: ICategoryRow["id"][];
 	user: User["id"];
 }
-
-export type IBookCreatePayload = Omit<IBookEditPayload, "id">;
 
 export interface IBookAuthorPayload {
 	book_id: string;

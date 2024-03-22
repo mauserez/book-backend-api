@@ -1,4 +1,4 @@
-import { IBookEditPayload } from "../types/book/types";
+import { IBookCreatePayload, IBookEditPayload } from "../types/book/types";
 import { BookRepository } from "../repositories/_index";
 import { GetBooksOptions } from "../repositories/BookRepository";
 
@@ -10,16 +10,15 @@ export class BookService {
 	}
 
 	public async getBook(id: string) {
-		const bookResult = await this.bookRepository.getBook(id);
-		return bookResult;
+		return await this.bookRepository.getBook(id);
 	}
 
 	public async editBook(bookPayload: IBookEditPayload) {
-		return this.bookRepository.saveBook(bookPayload);
+		return this.bookRepository.editBook(bookPayload);
 	}
 
-	public async createBook(bookPayload: IBookEditPayload) {
-		return this.bookRepository.saveBook(bookPayload);
+	public async createBook(bookPayload: IBookCreatePayload) {
+		return this.bookRepository.createBook(bookPayload);
 	}
 
 	public async deleteBook(id: string) {

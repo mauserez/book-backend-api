@@ -1,76 +1,73 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { CategoryController } from "../controllers/_index";
+import { AuthorController } from "../controllers/_index";
 import {
-	ICategoryCreatePayload,
-	ICategoryEditPayload,
-} from "../types/category/types";
+	IAuthorCreatePayload,
+	IAuthorEditPayload,
+} from "../types/author/types";
 
-export class CategoryRouter {
+export class AuthorRouter {
 	private _router: Router;
-	constructor(categoryController: CategoryController) {
+	constructor(authorController: AuthorController) {
 		this._router = Router();
 
 		//все категории
 		this._router.get(
-			"/categories",
+			"/authors",
 			async (
 				req: Request<{}, {}, {}, {}>,
 				res: Response,
 				next: NextFunction
 			) => {
-				const categories = await categoryController.getCategories(
-					req,
-					res,
-					next
-				);
-				res.send(categories);
+				const authors = await authorController.getCategories(req, res, next);
+				res.send(authors);
 			}
 		);
 
 		//категория по id
 		this._router.get(
-			"/category/:id",
+			"/author/:id",
 			async (req: Request<{ id: string }>, res, next) => {
-				const category = await categoryController.getCategory(req, res, next);
-				res.send(category);
+				const author = await authorController.getAuthor(req, res, next);
+				res.send(author);
 			}
 		);
 
 		//добавить категорию
 		this._router.post(
-			"/category",
+			"/author",
 			async (
-				req: Request<{}, {}, ICategoryCreatePayload>,
+				req: Request<{}, {}, IAuthorCreatePayload>,
 				res: Response,
 				next
 			) => {
-				const result = await categoryController.postCategory(req, res, next);
+				
+				const result = await authorController.postAuthor(req, res, next);
 				res.send(result);
 			}
 		);
 
 		//отредактировать категорию
 		this._router.patch(
-			"/category/:id",
+			"/author/:id",
 			async (
-				req: Request<{ id: string }, {}, ICategoryEditPayload>,
+				req: Request<{ id: string }, {}, IAuthorEditPayload>,
 				res: Response,
 				next: NextFunction
 			) => {
-				const result = await categoryController.patchCategory(req, res, next);
+				const result = await authorController.patchAuthor(req, res, next);
 				res.send(result);
 			}
 		);
 
 		//удалить категорию
 		this._router.delete(
-			"/category/:id",
+			"/author/:id",
 			async (
 				req: Request<{ id: string }>,
 				res: Response,
 				next: NextFunction
 			) => {
-				const result = await categoryController.deleteCategory(req, res, next);
+				const result = await authorController.deleteAuthor(req, res, next);
 				res.send(result);
 			}
 		);

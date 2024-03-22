@@ -4,11 +4,11 @@ import {
 	IBookEditPayload,
 	IBookCreatePayload,
 } from "../types/book/types";
-import { BookController } from "../controllers/BookController";
+import { BookController } from "../controllers/_index";
 
 export class BookRouter {
 	private _router: Router;
-	constructor(booksController: BookController) {
+	constructor(bookController: BookController) {
 		this._router = Router();
 
 		// получить список книг
@@ -19,7 +19,7 @@ export class BookRouter {
 				res: Response,
 				next: NextFunction
 			) => {
-				const books = await booksController.getBooks(req, res, next);
+				const books = await bookController.getBooks(req, res, next);
 				res.send(books);
 			}
 		);
@@ -28,7 +28,7 @@ export class BookRouter {
 		this._router.get(
 			"/book/:id",
 			async (req: Request<{ id: string }>, res, next) => {
-				const book = await booksController.getBook(req, res, next);
+				const book = await bookController.getBook(req, res, next);
 				res.send(book);
 			}
 		);
@@ -37,7 +37,7 @@ export class BookRouter {
 		this._router.post(
 			"/book",
 			async (req: Request<{}, {}, IBookCreatePayload>, res: Response, next) => {
-				const book = await booksController.postBook(req, res, next);
+				const book = await bookController.postBook(req, res, next);
 				res.send(book);
 			}
 		);
@@ -50,7 +50,7 @@ export class BookRouter {
 				res: Response,
 				next: NextFunction
 			) => {
-				const book = await booksController.patchBook(req, res, next);
+				const book = await bookController.patchBook(req, res, next);
 				res.send(book);
 			}
 		);
@@ -63,7 +63,7 @@ export class BookRouter {
 				res: Response,
 				next: NextFunction
 			) => {
-				const result = await booksController.deleteBook(req, res, next);
+				const result = await bookController.deleteBook(req, res, next);
 				res.send(result);
 			}
 		);

@@ -1,4 +1,4 @@
-export const result = <T>(success: boolean, result: T) => {
+export const responseResult = <T>(success: boolean, result: T) => {
 	return { success: success, result: result };
 };
 
