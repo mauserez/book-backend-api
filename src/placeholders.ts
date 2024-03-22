@@ -1,4 +1,4 @@
-import { IBookRow } from "./types/book/types";
+import { IBookRow } from "./api/book/types";
 //import { Category } from "./types/category/types";
 
 export const booksPlaceholder: IBookRow = {

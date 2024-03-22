@@ -1,9 +1,9 @@
 import cors from "cors";
 import express, { Express } from "express";
 
-import { BookController, AuthController } from "./controllers/_index";
-import { BookRouter, UserRouter } from "./routers/_index";
-import { LoggerMiddleware } from "./middlewares/_index";
+import { BookController, AuthController } from "./core/controllers";
+import { BookRouter, UserRouter } from "./core/routers";
+import { LoggerMiddleware } from "./core/middleware";
 
 export class App {
 	private app: Express;
