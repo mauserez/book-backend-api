@@ -29,14 +29,12 @@ export class CategoryController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		const id = !req.params.id ? undefined : req.params.id;
-
-		if (id === undefined) {
-			return responseResult(false, "Category id is empty");
-		} else {
-			const result = await this.categoryService.getCategory(id);
-			return result;
+		if (!req.params.id) {
+			return responseResult(false, "Param id is empty");
 		}
+
+		const result = await this.categoryService.getCategory(req.params.id);
+		return result;
 	}
 
 	async postCategory(
@@ -44,6 +42,10 @@ export class CategoryController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
+		if (!req.body.name) {
+			return responseResult(false, "Field name is empty");
+		}
+
 		const newCategoryPayload = { ...req.body, id: uuidv4() };
 
 		const result = await this.categoryService.createCategory(
@@ -57,6 +59,10 @@ export class CategoryController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
+		if (!req.body.name || !req.body.id) {
+			return responseResult(false, "Field id and name is empty");
+		}
+
 		const result = await this.categoryService.editCategory(req.body);
 		return result;
 	}
@@ -66,6 +72,10 @@ export class CategoryController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
+		if (!req.params.id) {
+			return responseResult(false, "Param id is empty");
+		}
+
 		const result = await this.categoryService.deleteCategory(req.params.id);
 		return result;
 	}

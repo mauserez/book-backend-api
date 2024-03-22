@@ -1,31 +1,30 @@
-import { ICategoryEditPayload } from "../category/types";
-import { CategoryRepository } from "../repositories/_index";
+import { IUserCreatePayload, IUserEditPayload } from "./types";
+import { UserRepository } from "./UserRepository";
 
-export class CategoryService {
-	categoryRepository: CategoryRepository;
+export class UserService {
+	userRepository: UserRepository;
 
 	constructor() {
-		this.categoryRepository = new CategoryRepository();
+		this.userRepository = new UserRepository();
 	}
 
-	public async getCategory(id: string) {
-		const categoryResult = await this.categoryRepository.getCategory(id);
-		return categoryResult;
+	public async getUser(id: string) {
+		return await this.userRepository.getUser(id);
 	}
 
-	public async editCategory(categoryPayload: ICategoryEditPayload) {
-		return this.categoryRepository.saveCategory(categoryPayload);
+	public async createUser(userPayload: IUserCreatePayload) {
+		return this.userRepository.createUser(userPayload);
 	}
 
-	public async createCategory(categoryPayload: ICategoryEditPayload) {
-		return this.categoryRepository.saveCategory(categoryPayload);
+	public async editUser(userPayload: IUserEditPayload) {
+		return this.userRepository.editUser(userPayload);
 	}
 
-	public async deleteCategory(id: string) {
-		return await this.categoryRepository.deleteCategory(id);
+	public async deleteUser(id: string) {
+		return await this.userRepository.deleteUser(id);
 	}
 
-	public async getCategories() {
-		return await this.categoryRepository.getCategories();
+	public async getUsers() {
+		return await this.userRepository.getUsers();
 	}
 }

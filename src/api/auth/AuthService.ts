@@ -1,4 +1,4 @@
-import { User, UserRow, IUserPayload } from "./types";
+import { User, UserRow, IUserPayload } from "../user/types";
 import { UserRepository } from "../repositories/_index";
 import { v4 as uuidv4 } from "uuid";
 

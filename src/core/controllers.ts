@@ -1,2 +1,2 @@
 export { BookController } from "../api/book/BookController";
-export { AuthController } from "../api/user/AuthController";
+export { AuthController } from "../api/auth/AuthController";

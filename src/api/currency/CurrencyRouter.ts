@@ -7,7 +7,7 @@ export class CurrencyRouter {
 	constructor(currencyController: CurrencyController) {
 		this._router = Router();
 
-		//все категории
+		//все currency
 		this._router.get(
 			"/currencies",
 			async (
@@ -24,7 +24,7 @@ export class CurrencyRouter {
 			}
 		);
 
-		//категория по id
+		//currency по id
 		this._router.get(
 			"/currency/:id",
 			async (req: Request<{ id: string }>, res, next) => {
@@ -33,7 +33,7 @@ export class CurrencyRouter {
 			}
 		);
 
-		//добавить категорию
+		//добавить currency
 		this._router.post(
 			"/currency",
 			async (
@@ -46,7 +46,7 @@ export class CurrencyRouter {
 			}
 		);
 
-		//отредактировать категорию
+		//отредактировать currency
 		this._router.patch(
 			"/currency/:id",
 			async (
@@ -59,7 +59,7 @@ export class CurrencyRouter {
 			}
 		);
 
-		//удалить категорию
+		//удалить currency
 		this._router.delete(
 			"/currency/:id",
 			async (

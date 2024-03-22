@@ -30,7 +30,7 @@ export class AuthorController extends Controller {
 		next: NextFunction
 	) {
 		if (!req.params.id) {
-			return responseResult(false, "Author id is empty");
+			return responseResult(false, "Param id is empty");
 		}
 
 		const result = await this.authorService.getAuthor(req.params.id);
@@ -57,6 +57,10 @@ export class AuthorController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
+		if (!req.body.id) {
+			return responseResult(false, "Field id is empty");
+		}
+
 		const result = await this.authorService.editAuthor(req.body);
 		return result;
 	}
@@ -66,6 +70,10 @@ export class AuthorController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
+		if (!req.params.id) {
+			return responseResult(false, "Param id is empty");
+		}
+
 		const result = await this.authorService.deleteAuthor(req.params.id);
 		return result;
 	}

@@ -7,7 +7,7 @@ export class AuthorRouter {
 	constructor(authorController: AuthorController) {
 		this._router = Router();
 
-		//все категории
+		//все author
 		this._router.get(
 			"/authors",
 			async (
@@ -20,7 +20,7 @@ export class AuthorRouter {
 			}
 		);
 
-		//категория по id
+		//author по id
 		this._router.get(
 			"/author/:id",
 			async (req: Request<{ id: string }>, res, next) => {
@@ -29,7 +29,7 @@ export class AuthorRouter {
 			}
 		);
 
-		//добавить категорию
+		//добавить author
 		this._router.post(
 			"/author",
 			async (
@@ -42,7 +42,7 @@ export class AuthorRouter {
 			}
 		);
 
-		//отредактировать категорию
+		//отредактировать author
 		this._router.patch(
 			"/author/:id",
 			async (
@@ -55,7 +55,7 @@ export class AuthorRouter {
 			}
 		);
 
-		//удалить категорию
+		//удалить author
 		this._router.delete(
 			"/author/:id",
 			async (

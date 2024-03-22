@@ -1,31 +1,26 @@
-import { ICategoryEditPayload } from "../category/types";
-import { CategoryRepository } from "../repositories/_index";
+import { IRatingCreatePayload, IRatingEditPayload } from "./types";
+import { RatingRepository } from "./RatingRepository";
 
-export class CategoryService {
-	categoryRepository: CategoryRepository;
+export class RatingService {
+	ratingRepository: RatingRepository;
 
 	constructor() {
-		this.categoryRepository = new CategoryRepository();
+		this.ratingRepository = new RatingRepository();
 	}
 
-	public async getCategory(id: string) {
-		const categoryResult = await this.categoryRepository.getCategory(id);
-		return categoryResult;
+	public async getRating(id: string) {
+		return await this.ratingRepository.getRating(id);
 	}
 
-	public async editCategory(categoryPayload: ICategoryEditPayload) {
-		return this.categoryRepository.saveCategory(categoryPayload);
+	public async createRating(ratingPayload: IRatingCreatePayload) {
+		return this.ratingRepository.createRating(ratingPayload);
 	}
 
-	public async createCategory(categoryPayload: ICategoryEditPayload) {
-		return this.categoryRepository.saveCategory(categoryPayload);
+	public async editRating(ratingPayload: IRatingEditPayload) {
+		return this.ratingRepository.editRating(ratingPayload);
 	}
 
-	public async deleteCategory(id: string) {
-		return await this.categoryRepository.deleteCategory(id);
-	}
-
-	public async getCategories() {
-		return await this.categoryRepository.getCategories();
+	public async deleteRating(id: string) {
+		return await this.ratingRepository.deleteRating(id);
 	}
 }

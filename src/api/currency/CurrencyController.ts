@@ -30,7 +30,7 @@ export class CurrencyController extends Controller {
 		next: NextFunction
 	) {
 		if (!req.params.id) {
-			return responseResult(false, "Currency id is empty");
+			return responseResult(false, "Param id is empty");
 		}
 
 		const result = await this.currencyService.getCurrency(req.params.id);
@@ -62,6 +62,13 @@ export class CurrencyController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
+		if (!req.body.currency_name || !req.body.currency_acronym || !req.body.id) {
+			return responseResult(
+				false,
+				"Field id or currency_name or currency_acronym is empty"
+			);
+		}
+
 		const result = await this.currencyService.editCurrency(req.body);
 		return result;
 	}
@@ -71,6 +78,10 @@ export class CurrencyController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
+		if (!req.params.id) {
+			return responseResult(false, "Param id is empty");
+		}
+
 		const result = await this.currencyService.deleteCurrency(req.params.id);
 		return result;
 	}

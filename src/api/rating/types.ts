@@ -1,18 +1,24 @@
-import { User } from "../user/types";
+import { Decimal } from "@prisma/client/runtime/library";
+
 import { IBookRow } from "../book/types";
 
-export interface IRatingRow {}
-
-export interface IRatingPayload {
+export interface IRatingRow {
 	id: string;
-	user_id: string;
+	value: number | Decimal;
+	comment: string | null;
 	book_id: IBookRow["id"];
-	rating: number;
+	user_id: string;
 }
 
-export interface RatingRecord {
-	id: string;
-	book_id: string;
+export interface IRatingCreatePayload {
+	value: number | Decimal;
+	comment?: string;
+	book_id: IBookRow["id"];
 	user_id: string;
-	value: number;
+}
+
+export interface IRatingEditPayload {
+	id: string;
+	value?: number;
+	comment?: string;
 }

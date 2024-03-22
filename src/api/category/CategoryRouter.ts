@@ -7,7 +7,7 @@ export class CategoryRouter {
 	constructor(categoryController: CategoryController) {
 		this._router = Router();
 
-		//все категории
+		//все category
 		this._router.get(
 			"/categories",
 			async (
@@ -24,7 +24,7 @@ export class CategoryRouter {
 			}
 		);
 
-		//категория по id
+		//category по id
 		this._router.get(
 			"/category/:id",
 			async (req: Request<{ id: string }>, res, next) => {
@@ -33,7 +33,7 @@ export class CategoryRouter {
 			}
 		);
 
-		//добавить категорию
+		//добавить category
 		this._router.post(
 			"/category",
 			async (
@@ -46,7 +46,7 @@ export class CategoryRouter {
 			}
 		);
 
-		//отредактировать категорию
+		//отредактировать category
 		this._router.patch(
 			"/category/:id",
 			async (
@@ -59,7 +59,7 @@ export class CategoryRouter {
 			}
 		);
 
-		//удалить категорию
+		//удалить category
 		this._router.delete(
 			"/category/:id",
 			async (

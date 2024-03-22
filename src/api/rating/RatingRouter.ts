@@ -1,24 +1,62 @@
-import { Router, Request, Response } from "express";
-import { IRatingPayload } from "./types";
-import { BookService, AuthService } from "../services/_index";
+import { Router, Request, Response, NextFunction } from "express";
+import { RatingController } from "./RatingController";
+import { IRatingCreatePayload, IRatingEditPayload } from "./types";
 
-export class RaitingRouter {
+export class RatingRouter {
 	private _router: Router;
-
-	constructor(bookService: BookService, authService: AuthService) {
+	constructor(ratingController: RatingController) {
 		this._router = Router();
 
-		// проверка авторизации
+		//rating по id
+		this._router.get(
+			"/rating/:id",
+			async (req: Request<{ id: string }>, res, next) => {
+				const rating = await ratingController.getRating(req, res, next);
+				res.send(rating);
+			}
+		);
 
-		// добавить рейтинг
+		//добавить rating
 		this._router.post(
 			"/rating",
-			(req: Request<{}, {}, IRatingPayload[]>, res: Response) => {
-				res.send(null);
+			async (
+				req: Request<{}, {}, IRatingCreatePayload>,
+				res: Response,
+				next
+			) => {
+				const result = await ratingController.postRating(req, res, next);
+				res.send(result);
+			}
+		);
+
+		//отредактировать rating
+		this._router.patch(
+			"/rating/:id",
+			async (
+				req: Request<{ id: string }, {}, IRatingEditPayload>,
+				res: Response,
+				next: NextFunction
+			) => {
+				const result = await ratingController.patchRating(req, res, next);
+				res.send(result);
+			}
+		);
+
+		//удалить rating
+		this._router.delete(
+			"/rating/:id",
+			async (
+				req: Request<{ id: string }>,
+				res: Response,
+				next: NextFunction
+			) => {
+				const result = await ratingController.deleteRating(req, res, next);
+				res.send(result);
 			}
 		);
 	}
-}
 
-// Эндпоинты для рейтинга книг:
-// POST /api/v1/rating — добавление рейтинга. Рейтинг не может быть добавлен, если пользователь не авторизован.
+	get router() {
+		return this._router;
+	}
+}
