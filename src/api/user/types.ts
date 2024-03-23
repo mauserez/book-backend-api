@@ -10,10 +10,12 @@ export type IUserEditPayload = {
 	id: string;
 	name?: string;
 	description?: string;
-	login?: string;
 };
 
 export type IUserCreatePayload = {
 	login: string;
 	password: string;
 };
+
+export type IUserLogin = IUserCreatePayload;
+export type IUserRegister = IUserLogin;

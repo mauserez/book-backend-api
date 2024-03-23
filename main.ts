@@ -1,17 +1,47 @@
+import { RatingController } from "./src/api/rating/RatingController";
 import { App } from "./src/App";
 import * as dotenv from "dotenv";
 
-import { AuthController, BookController } from "./src/controllers/_index";
-import { AuthService, BookService } from "./src/services/_index";
+import {
+	AuthorController,
+	BookController,
+	CategoryController,
+	CurrencyController,
+	UserController,
+} from "./src/core/controllers";
+
+import {
+	AuthorService,
+	BookService,
+	CategoryService,
+	CurrencyService,
+	RatingService,
+	UserService,
+} from "./src/core/services";
+
+import { UserRepository } from "./src/core/repositories";
 
 dotenv.config();
 
 async function bootstrap() {
+	const authorController = new AuthorController(new AuthorService());
 	const bookController = new BookController(new BookService());
-	const authController = new AuthController(new AuthService());
-	// const categoryController = new CategoryController(new CategoryService(new CategoryRepository(new DBService())));
+	const categoryController = new CategoryController(new CategoryService());
+	const currencyController = new CurrencyController(new CurrencyService());
+	const ratingController = new RatingController(new RatingService());
+	const userController = new UserController(
+		new UserService(),
+		new UserRepository()
+	);
 
-	const app = new App(bookController, authController);
+	const app = new App(
+		authorController,
+		bookController,
+		categoryController,
+		currencyController,
+		ratingController,
+		userController
+	);
 
 	await app.run();
 }

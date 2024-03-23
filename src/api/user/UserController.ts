@@ -3,19 +3,16 @@ import { Request, Response, NextFunction } from "express";
 import { Controller } from "../../core/Controller";
 
 import { UserService } from "./UserService";
-import { IUserEditPayload, IUserCreatePayload } from "./types";
+import { IUserEditPayload, IUserLogin, IUserRegister } from "./types";
 
 import { responseResult } from "../../helpers/resultHelper";
-import bcrypt from "bcrypt";
 
 export class UserController extends Controller {
 	private userService: UserService;
-	private userRepository: UserRepository;
 
-	constructor(userService: UserService, userRepository: UserRepository) {
+	constructor(userService: UserService) {
 		super();
 		this.userService = userService;
-		this.userRepository = userRepository;
 	}
 
 	async getUsers(
@@ -40,34 +37,8 @@ export class UserController extends Controller {
 		return result;
 	}
 
-	async postUser(
-		req: Request<{}, {}, IUserCreatePayload>,
-		res: Response,
-		next: NextFunction
-	) {
-		if (!req.body.login || req.body.password) {
-			return responseResult(false, "Field login or password is empty");
-		}
-
-		let { login, password } = req.body;
-
-		const searchedUser = await this.userRepository.getUserByLogin(login.trim());
-
-		if (searchedUser.success && searchedUser.result) {
-			return responseResult(false, "User already exists");
-		}
-
-		password = await bcrypt.hash(password, 10);
-
-		const newUserPayload = { login, password };
-
-		const result = await this.userService.createUser(newUserPayload);
-
-		return result;
-	}
-
 	async patchUser(
-		req: Request<{ id: string }, {}, IUserEditPayload>,
+		req: Request<{}, {}, IUserEditPayload>,
 		res: Response,
 		next: NextFunction
 	) {
@@ -79,7 +50,7 @@ export class UserController extends Controller {
 		return result;
 	}
 
-	async deleteUser(
+	/* async deleteUser(
 		req: Request<{ id: string }, {}, {}>,
 		res: Response,
 		next: NextFunction
@@ -89,6 +60,34 @@ export class UserController extends Controller {
 		}
 
 		const result = await this.userService.deleteUser(req.params.id);
+		return result;
+	} */
+
+	async register(
+		req: Request<{}, {}, IUserRegister>,
+		res: Response,
+		next: NextFunction
+	) {
+		const { login, password } = req.body;
+		if (!login || !password) {
+			return responseResult(false, "Field login or password is empty");
+		}
+
+		const result = await this.userService.register({ login, password });
+		return result;
+	}
+
+	async login(
+		req: Request<{}, {}, IUserLogin>,
+		res: Response,
+		next: NextFunction
+	) {
+		const { login, password } = req.body;
+		if (!login || !password) {
+			return responseResult(false, "Field login or password is empty");
+		}
+
+		const result = await this.userService.login({ login, password });
 		return result;
 	}
 }

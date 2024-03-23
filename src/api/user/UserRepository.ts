@@ -1,7 +1,15 @@
-import { IUserCreatePayload, IUserEditPayload, IUserRow } from "./types";
+import {
+	IUserCreatePayload,
+	IUserEditPayload,
+	IUserLogin,
+	IUserRegister,
+	IUserRow,
+} from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { errorText, responseResult } from "../../helpers/resultHelper";
 import prisma from "../../prisma";
+import bcrypt from "bcrypt";
+import { sign as jwtSign } from "jsonwebtoken";
 
 export class UserRepository {
 	public async getUsers() {
@@ -73,6 +81,58 @@ export class UserRepository {
 			});
 
 			return responseResult(true, user);
+		} catch (error) {
+			return responseResult(false, errorText(error));
+		}
+	}
+
+	public async register(credentials: IUserRegister) {
+		try {
+			const { login, password } = credentials;
+			const user = await prisma.user.create({
+				data: { id: uuidv4(), login, password },
+			});
+
+			return responseResult(true, user);
+		} catch (error) {
+			return responseResult(false, errorText(error));
+		}
+	}
+
+	public async login(credentials: IUserLogin) {
+		try {
+			const { login, password } = credentials;
+			const user = await prisma.user.findFirst({
+				where: {
+					login: login,
+				},
+			});
+
+			if (!user) {
+				throw new Error("User credentials is not correct");
+			}
+
+			const isPasswordCorrect = await bcrypt.compare(
+				credentials.password,
+				user.password
+			);
+
+			if (!isPasswordCorrect) {
+				return responseResult(false, "Invalid credentials");
+			}
+
+			const returnedUser: Partial<IUserRow> = { ...user };
+			delete returnedUser.password;
+
+			const token = jwtSign(
+				{
+					exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+					data: { returnedUser },
+				},
+				<string>process.env.JWT_SECRET
+			);
+
+			return responseResult(true, token);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
