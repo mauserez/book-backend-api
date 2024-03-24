@@ -32,7 +32,6 @@ export class AuthMiddleware extends Middleware {
 
 		verify(token, <string>process.env.JWT_SECRET, (err, payload) => {
 			if (err) {
-				console.log("verify err", err);
 				res.status(401).send(responseResult(false, err.message));
 			} else {
 				const pay: JwtPayload = <JwtPayload>payload;
