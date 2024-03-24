@@ -58,14 +58,14 @@ export class CurrencyController extends Controller {
 	}
 
 	async patchCurrency(
-		req: Request<{ id: string }, {}, ICurrencyEditPayload>,
+		req: Request<{}, {}, ICurrencyEditPayload>,
 		res: Response,
 		next: NextFunction
 	) {
-		if (!req.body.currency_name || !req.body.currency_acronym || !req.body.id) {
+		if (!req.body.id) {
 			return responseResult(
 				false,
-				"Field id or currency_name or currency_acronym is empty"
+				"Field id is empty.Field currency_name or currency_acronym optional"
 			);
 		}
 

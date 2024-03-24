@@ -29,10 +29,7 @@ async function bootstrap() {
 	const categoryController = new CategoryController(new CategoryService());
 	const currencyController = new CurrencyController(new CurrencyService());
 	const ratingController = new RatingController(new RatingService());
-	const userController = new UserController(
-		new UserService(),
-		new UserRepository()
-	);
+	const userController = new UserController(new UserService());
 
 	const app = new App(
 		authorController,

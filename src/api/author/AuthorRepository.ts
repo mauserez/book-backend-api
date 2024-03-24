@@ -29,11 +29,11 @@ export class AuthorRepository {
 		try {
 			const authorId = uuidv4();
 
-			prisma.author.create({
+			await prisma.author.create({
 				data: { ...author, id: authorId },
 			});
 
-			return responseResult(true, "Saved");
+			return responseResult(true, authorId);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
@@ -42,9 +42,9 @@ export class AuthorRepository {
 	public async editAuthor(author: IAuthorEditPayload) {
 		try {
 			const authorId = author.id;
-			prisma.author.update({ where: { id: authorId }, data: author });
+			await prisma.author.update({ where: { id: authorId }, data: author });
 
-			return responseResult(true, "Updated");
+			return responseResult(true, "updated");
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
@@ -58,7 +58,7 @@ export class AuthorRepository {
 				},
 			});
 
-			return responseResult(true, "Deleted");
+			return responseResult(true, "deleted");
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

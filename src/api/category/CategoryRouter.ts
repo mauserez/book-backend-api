@@ -48,7 +48,7 @@ export class CategoryRouter {
 
 		//отредактировать category
 		this._router.patch(
-			"/category/:id",
+			"/category",
 			async (
 				req: Request<{ id: string }, {}, ICategoryEditPayload>,
 				res: Response,

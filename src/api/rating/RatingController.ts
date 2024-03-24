@@ -48,7 +48,7 @@ export class RatingController extends Controller {
 	}
 
 	async patchRating(
-		req: Request<{ id: string }, {}, IRatingEditPayload>,
+		req: Request<{}, {}, IRatingEditPayload>,
 		res: Response,
 		next: NextFunction
 	) {

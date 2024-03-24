@@ -9,6 +9,15 @@ export class RatingRouter {
 
 		//rating по id
 		this._router.get(
+			"/rating/book/:id",
+			async (req: Request<{ id: string }>, res, next) => {
+				const rating = await ratingController.getRating(req, res, next);
+				res.send(rating);
+			}
+		);
+
+		//найти оценку rating по id
+		this._router.get(
 			"/rating/:id",
 			async (req: Request<{ id: string }>, res, next) => {
 				const rating = await ratingController.getRating(req, res, next);
@@ -16,7 +25,7 @@ export class RatingRouter {
 			}
 		);
 
-		//добавить rating
+		//добавить оценку rating
 		this._router.post(
 			"/rating",
 			async (
@@ -29,9 +38,9 @@ export class RatingRouter {
 			}
 		);
 
-		//отредактировать rating
+		//отредактировать оценку rating
 		this._router.patch(
-			"/rating/:id",
+			"/rating",
 			async (
 				req: Request<{ id: string }, {}, IRatingEditPayload>,
 				res: Response,
@@ -42,7 +51,7 @@ export class RatingRouter {
 			}
 		);
 
-		//удалить rating
+		//удалить оценку rating
 		this._router.delete(
 			"/rating/:id",
 			async (

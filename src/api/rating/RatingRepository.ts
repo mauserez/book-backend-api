@@ -20,11 +20,11 @@ export class RatingRepository {
 		try {
 			const ratingId = uuidv4();
 
-			prisma.rating.create({
+			await prisma.rating.create({
 				data: { ...rating, id: ratingId },
 			});
 
-			return responseResult(true, "Saved");
+			return responseResult(true, ratingId);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
@@ -33,9 +33,9 @@ export class RatingRepository {
 	public async editRating(rating: IRatingEditPayload) {
 		try {
 			const ratingId = rating.id;
-			prisma.rating.update({ where: { id: ratingId }, data: rating });
+			await prisma.rating.update({ where: { id: ratingId }, data: rating });
 
-			return responseResult(true, "Updated");
+			return responseResult(true, ratingId);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

@@ -19,10 +19,6 @@ export class UserService {
 		return await this.userRepository.getUser(id);
 	}
 
-	public async createUser(userPayload: IUserCreatePayload) {
-		return this.userRepository.createUser(userPayload);
-	}
-
 	public async editUser(userPayload: IUserEditPayload) {
 		return this.userRepository.editUser(userPayload);
 	}
@@ -51,4 +47,12 @@ export class UserService {
 	public async login(credentials: IUserLogin) {
 		return await this.userRepository.login(credentials);
 	}
+
+	/* public refreshToken(req: Request, res: Response, next: NextFunction) {
+		if (req.headers.authorization) {
+			const token = req.headers.authorization.split(" ")[1];
+			return this.userRepository.refresh(token);
+		}
+	}
+ */
 }

@@ -48,7 +48,7 @@ export class CurrencyRouter {
 
 		//отредактировать currency
 		this._router.patch(
-			"/currency/:id",
+			"/currency",
 			async (
 				req: Request<{ id: string }, {}, ICurrencyEditPayload>,
 				res: Response,

@@ -1,6 +1,8 @@
 import { CategoryController } from "./api/category/CategoryController";
 import cors from "cors";
 import express, { Express } from "express";
+import bodyParser from "body-parser";
+import session from "express-session";
 
 import {
 	AuthorController,
@@ -18,6 +20,7 @@ import {
 	RatingRouter,
 } from "./core/routers";
 import { AuthMiddleware } from "./core/middleware";
+import { JWT } from "./core/middleware/AuthMiddleware";
 
 export class App {
 	private app: Express;
@@ -50,17 +53,35 @@ export class App {
 	}
 
 	private configureRoutes() {
+		this.app.use("/api/v1", this.userRouter.router);
 		this.app.use("/api/v1", this._auth.verifyAuth, this.authorRouter.router);
 		this.app.use("/api/v1", this._auth.verifyAuth, this.booksRouter.router);
 		this.app.use("/api/v1", this._auth.verifyAuth, this.categoryRouter.router);
 		this.app.use("/api/v1", this._auth.verifyAuth, this.currencyRouter.router);
 		this.app.use("/api/v1", this._auth.verifyAuth, this.ratingRouter.router);
-		this.app.use("/api/v1", this._auth.verifyAuth, this.userRouter.router);
 	}
 
 	public async run() {
+		this.app.use((req, res, next) => {
+			if (req.headers.authorization) {
+				const decoded = this._auth.parseToken(req, res);
+				console.log(decoded);
+			}
+			res.locals.user = next();
+		});
+
+		this.app.use(
+			session({
+				secret: <string>process.env.JWT_SECRET,
+				resave: false,
+				saveUninitialized: true,
+				cookie: { secure: true },
+			})
+		);
+
 		this.app.use(cors());
-		this.app.use(express.json());
+		this.app.use(bodyParser.json());
+		this.app.use(express.urlencoded({ extended: true }));
 
 		this.app.listen(this.port, () => {
 			console.log("Приложение запущено!");

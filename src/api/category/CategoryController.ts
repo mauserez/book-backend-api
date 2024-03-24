@@ -55,7 +55,7 @@ export class CategoryController extends Controller {
 	}
 
 	async patchCategory(
-		req: Request<{ id: string }, {}, ICategoryEditPayload>,
+		req: Request<{}, {}, ICategoryEditPayload>,
 		res: Response,
 		next: NextFunction
 	) {

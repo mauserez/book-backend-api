@@ -31,7 +31,7 @@ export class UserRouter {
 
 		//отредактировать user
 		this._router.patch(
-			"/user/:id",
+			"/user",
 			async (
 				req: Request<{ id: string }, {}, IUserEditPayload>,
 				res: Response,
@@ -56,22 +56,16 @@ export class UserRouter {
 		); */
 
 		//register
-		this._router.get(
-			"/user/register",
-			async (req: Request<{ id: string }>, res, next) => {
-				const user = await userController.register(req, res, next);
-				res.send(user);
-			}
-		);
+		this._router.post("/user/register", async (req, res, next) => {
+			const user = await userController.register(req, res, next);
+			res.send(user);
+		});
 
 		//login
-		this._router.get(
-			"/user/login",
-			async (req: Request<{ id: string }>, res, next) => {
-				const user = await userController.login(req, res, next);
-				res.send(user);
-			}
-		);
+		this._router.post("/user/login", async (req, res, next) => {
+			const user = await userController.login(req, res, next);
+			res.send(user);
+		});
 	}
 
 	get router() {

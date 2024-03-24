@@ -42,18 +42,20 @@ export class AuthorController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		if (!req.body.first_name || !req.body.last_name) {
-			return responseResult(false, "First_name or last_name is empty");
+		const { first_name, last_name } = req.body;
+		if (!first_name || !last_name) {
+			return responseResult(
+				false,
+				"Field first_name or last_name is empty, years_active is not required"
+			);
 		}
 
-		const newAuthorPayload = { ...req.body, id: uuidv4() };
-
-		const result = await this.authorService.createAuthor(newAuthorPayload);
+		const result = await this.authorService.createAuthor(req.body);
 		return result;
 	}
 
 	async patchAuthor(
-		req: Request<{ id: string }, {}, IAuthorEditPayload>,
+		req: Request<{}, {}, IAuthorEditPayload>,
 		res: Response,
 		next: NextFunction
 	) {

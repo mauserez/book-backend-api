@@ -44,7 +44,7 @@ export class AuthorRouter {
 
 		//отредактировать author
 		this._router.patch(
-			"/author/:id",
+			"/author",
 			async (
 				req: Request<{ id: string }, {}, IAuthorEditPayload>,
 				res: Response,

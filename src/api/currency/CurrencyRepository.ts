@@ -32,12 +32,11 @@ export class CurrencyRepository {
 	public async createCurrency(currency: ICurrencyCreatePayload) {
 		try {
 			const currencyId = uuidv4();
-
-			prisma.currency.create({
+			await prisma.currency.create({
 				data: { ...currency, id: currencyId },
 			});
 
-			return responseResult(true, "Saved");
+			return responseResult(true, currencyId);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
@@ -46,9 +45,12 @@ export class CurrencyRepository {
 	public async editCurrency(currency: ICurrencyEditPayload) {
 		try {
 			const currencyId = currency.id;
-			prisma.currency.update({ where: { id: currencyId }, data: currency });
+			await prisma.currency.update({
+				where: { id: currencyId },
+				data: currency,
+			});
 
-			return responseResult(true, "Updated");
+			return responseResult(true, currencyId);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

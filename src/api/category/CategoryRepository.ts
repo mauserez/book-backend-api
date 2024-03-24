@@ -28,7 +28,7 @@ export class CategoryRepository {
 		try {
 			const categoryId = category.id;
 
-			prisma.category.upsert({
+			await prisma.category.upsert({
 				where: {
 					id: categoryId,
 				},
@@ -36,7 +36,7 @@ export class CategoryRepository {
 				create: category,
 			});
 
-			return responseResult(true, "Saved");
+			return responseResult(true, categoryId);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

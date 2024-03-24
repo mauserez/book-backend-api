@@ -6,6 +6,7 @@ import { UserService } from "./UserService";
 import { IUserEditPayload, IUserLogin, IUserRegister } from "./types";
 
 import { responseResult } from "../../helpers/resultHelper";
+import { verify } from "jsonwebtoken";
 
 export class UserController extends Controller {
 	private userService: UserService;
@@ -69,6 +70,7 @@ export class UserController extends Controller {
 		next: NextFunction
 	) {
 		const { login, password } = req.body;
+		console.log(req.body);
 		if (!login || !password) {
 			return responseResult(false, "Field login or password is empty");
 		}
