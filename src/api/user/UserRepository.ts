@@ -137,7 +137,7 @@ export class UserRepository {
 					} else {
 						const user = await prisma.user.findFirst({
 							where: {
-								login: decodedJwt.data.user.login,
+								login: decodedJwt.user.login,
 							},
 						});
 

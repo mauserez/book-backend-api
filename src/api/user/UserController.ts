@@ -70,7 +70,7 @@ export class UserController extends Controller {
 		next: NextFunction
 	) {
 		const { login, password } = req.body;
-		console.log(req.body);
+
 		if (!login || !password) {
 			return responseResult(false, "Field login or password is empty");
 		}

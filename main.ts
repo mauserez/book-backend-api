@@ -1,4 +1,3 @@
-import { RatingController } from "./src/api/rating/RatingController";
 import { App } from "./src/App";
 import * as dotenv from "dotenv";
 
@@ -7,6 +6,7 @@ import {
 	BookController,
 	CategoryController,
 	CurrencyController,
+	RatingController,
 	UserController,
 } from "./src/core/controllers";
 
@@ -18,8 +18,6 @@ import {
 	RatingService,
 	UserService,
 } from "./src/core/services";
-
-import { UserRepository } from "./src/core/repositories";
 
 dotenv.config();
 

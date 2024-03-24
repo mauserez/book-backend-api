@@ -7,13 +7,11 @@ import { jwtDecode } from "jwt-decode";
 
 export type JWT = {
 	exp: number;
-	data: {
-		user: {
-			id: string;
-			name: string | null;
-			description: string | null;
-			login: string;
-		};
+	user: {
+		id: string;
+		name: string | null;
+		description: string | null;
+		login: string;
 	};
 	iat: number;
 };
@@ -53,7 +51,7 @@ export class AuthMiddleware extends Middleware {
 	public parseToken(req: Request, res: Response) {
 		if (req.headers.authorization) {
 			const token = req.headers.authorization.split(" ")[1];
-			return jwtDecode(token);
+			return jwtDecode(token) as JWT;
 		}
 		return null;
 	}

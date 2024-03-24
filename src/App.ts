@@ -65,9 +65,13 @@ export class App {
 		this.app.use((req, res, next) => {
 			if (req.headers.authorization) {
 				const decoded = this._auth.parseToken(req, res);
-				console.log(decoded);
+
+				if (decoded) {
+					res.locals.user = decoded.user;
+					res.locals.userId = decoded.user.id;
+				}
 			}
-			res.locals.user = next();
+			next();
 		});
 
 		this.app.use(
