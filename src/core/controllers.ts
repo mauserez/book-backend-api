@@ -1,3 +1,4 @@
+export { AuthController } from "../api/auth/AuthController";
 export { AuthorController } from "../api/author/AuthorController";
 export { BookController } from "../api/book/BookController";
 export { CategoryController } from "../api/category/CategoryController";

@@ -37,6 +37,11 @@ export class UserRouter {
 				res: Response,
 				next: NextFunction
 			) => {
+				if (res.locals.userId) {
+					res.send("Not auth.Bad user id");
+					return;
+				}
+				req.body.id = res.locals.userId;
 				const result = await userController.patchUser(req, res, next);
 				res.send(result);
 			}
@@ -55,16 +60,10 @@ export class UserRouter {
 			}
 		); */
 
-		//register
-		this._router.post("/user/register", async (req, res, next) => {
-			const user = await userController.register(req, res, next);
-			res.send(user);
-		});
-
 		//login
-		this._router.post("/user/login", async (req, res, next) => {
-			const user = await userController.login(req, res, next);
-			res.send(user);
+		this._router.post("/user/books", async (req, res, next) => {
+			//const user = await userController.login(req, res, next);
+			res.send([]);
 		});
 	}
 

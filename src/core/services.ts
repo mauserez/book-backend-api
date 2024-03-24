@@ -1,3 +1,4 @@
+export { AuthService } from "../api/auth/AuthService";
 export { AuthorService } from "../api/author/AuthorService";
 export { BookService } from "../api/book/BookService";
 export { CategoryService } from "../api/category/CategoryService";

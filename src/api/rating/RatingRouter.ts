@@ -42,7 +42,7 @@ export class RatingRouter {
 		this._router.patch(
 			"/rating",
 			async (
-				req: Request<{ id: string }, {}, IRatingEditPayload>,
+				req: Request<{}, {}, IRatingEditPayload>,
 				res: Response,
 				next: NextFunction
 			) => {

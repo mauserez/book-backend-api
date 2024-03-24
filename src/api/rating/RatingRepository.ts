@@ -33,7 +33,13 @@ export class RatingRepository {
 	public async editRating(rating: IRatingEditPayload) {
 		try {
 			const ratingId = rating.id;
-			await prisma.rating.update({ where: { id: ratingId }, data: rating });
+			await prisma.rating.update({
+				where: { id: ratingId },
+				data: {
+					value: rating.value || undefined,
+					comment: rating.comment || undefined,
+				},
+			});
 
 			return responseResult(true, ratingId);
 		} catch (error) {

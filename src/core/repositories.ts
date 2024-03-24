@@ -1,3 +1,4 @@
+export { AuthRepository } from "../api/auth/AuthRepository";
 export { AuthorRepository } from "../api/author/AuthorRepository";
 export { BookRepository } from "../api/book/BookRepository";
 export { CategoryRepository } from "../api/category/CategoryRepository";

@@ -63,33 +63,4 @@ export class UserController extends Controller {
 		const result = await this.userService.deleteUser(req.params.id);
 		return result;
 	} */
-
-	async register(
-		req: Request<{}, {}, IUserRegister>,
-		res: Response,
-		next: NextFunction
-	) {
-		const { login, password } = req.body;
-
-		if (!login || !password) {
-			return responseResult(false, "Field login or password is empty");
-		}
-
-		const result = await this.userService.register({ login, password });
-		return result;
-	}
-
-	async login(
-		req: Request<{}, {}, IUserLogin>,
-		res: Response,
-		next: NextFunction
-	) {
-		const { login, password } = req.body;
-		if (!login || !password) {
-			return responseResult(false, "Field login or password is empty");
-		}
-
-		const result = await this.userService.login({ login, password });
-		return result;
-	}
 }

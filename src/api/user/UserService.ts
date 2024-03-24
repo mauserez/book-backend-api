@@ -30,29 +30,4 @@ export class UserService {
 	public async getUsers() {
 		return await this.userRepository.getUsers();
 	}
-
-	public async register(credentials: IUserRegister) {
-		let { login, password } = credentials;
-
-		const searchedUser = await this.userRepository.getUserByLogin(login.trim());
-		if (searchedUser.success && searchedUser.result) {
-			return responseResult(false, "User already exists");
-		}
-
-		password = await bcrypt.hash(password, 10);
-
-		return await this.userRepository.register({ login, password });
-	}
-
-	public async login(credentials: IUserLogin) {
-		return await this.userRepository.login(credentials);
-	}
-
-	/* public refreshToken(req: Request, res: Response, next: NextFunction) {
-		if (req.headers.authorization) {
-			const token = req.headers.authorization.split(" ")[1];
-			return this.userRepository.refresh(token);
-		}
-	}
- */
 }

@@ -37,7 +37,13 @@ export class UserRepository {
 	public async editUser(user: IUserEditPayload) {
 		try {
 			const userId = user.id;
-			await prisma.user.update({ where: { id: userId }, data: user });
+			await prisma.user.update({
+				where: { id: userId },
+				data: {
+					description: user.description || undefined,
+					name: user.name || undefined,
+				},
+			});
 
 			return responseResult(true, userId);
 		} catch (error) {
@@ -68,98 +74,6 @@ export class UserRepository {
 			});
 
 			return responseResult(true, user);
-		} catch (error) {
-			return responseResult(false, errorText(error));
-		}
-	}
-
-	public async register(credentials: IUserRegister) {
-		try {
-			const { login, password } = credentials;
-			const user = await prisma.user.create({
-				data: { id: uuidv4(), login, password },
-			});
-
-			return responseResult(true, user);
-		} catch (error) {
-			return responseResult(false, errorText(error));
-		}
-	}
-
-	public async login(credentials: IUserLogin) {
-		try {
-			const { login, password } = credentials;
-			const user = await prisma.user.findFirst({
-				where: {
-					login: login,
-				},
-			});
-
-			if (!user) {
-				throw new Error("User credentials is not correct");
-			}
-
-			const isPasswordCorrect = await bcrypt.compare(
-				credentials.password,
-				user.password
-			);
-
-			if (!isPasswordCorrect) {
-				return responseResult(false, "Invalid credentials");
-			}
-
-			const returnedUser: Partial<IUserRow> = { ...user };
-			delete returnedUser.password;
-
-			const token = jwtSign(
-				{
-					exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-					user: { ...returnedUser },
-				},
-				<string>process.env.JWT_SECRET
-			);
-
-			return responseResult(true, token);
-		} catch (error) {
-			return responseResult(false, errorText(error));
-		}
-	}
-
-	public async refresh(jwt: string) {
-		try {
-			return jwtVerify(
-				jwt,
-				<string>process.env.JWT_SECRET,
-				async (err, decoded) => {
-					const decodedJwt = <JWT>decoded;
-					if (err) {
-						return responseResult(false, err.message);
-					} else {
-						const user = await prisma.user.findFirst({
-							where: {
-								login: decodedJwt.user.login,
-							},
-						});
-
-						if (!user) {
-							throw new Error("User credentials is not correct");
-						}
-
-						const returnedUser: Partial<IUserRow> = { ...user };
-						delete returnedUser.password;
-
-						const token = jwtSign(
-							{
-								exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-								user: { returnedUser },
-							},
-							<string>process.env.JWT_SECRET
-						);
-
-						return responseResult(true, token);
-					}
-				}
-			);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

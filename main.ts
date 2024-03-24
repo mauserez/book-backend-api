@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 
 import {
 	AuthorController,
+	AuthController,
 	BookController,
 	CategoryController,
 	CurrencyController,
@@ -11,6 +12,7 @@ import {
 } from "./src/core/controllers";
 
 import {
+	AuthService,
 	AuthorService,
 	BookService,
 	CategoryService,
@@ -22,6 +24,7 @@ import {
 dotenv.config();
 
 async function bootstrap() {
+	const authController = new AuthController(new AuthService());
 	const authorController = new AuthorController(new AuthorService());
 	const bookController = new BookController(new BookService());
 	const categoryController = new CategoryController(new CategoryService());
@@ -30,6 +33,7 @@ async function bootstrap() {
 	const userController = new UserController(new UserService());
 
 	const app = new App(
+		authController,
 		authorController,
 		bookController,
 		categoryController,
