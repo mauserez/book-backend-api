@@ -73,7 +73,7 @@ export class UserRepository {
 				},
 			});
 
-			return responseResult(true, user);
+			return user ? responseResult(true, user) : responseResult(false, null);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

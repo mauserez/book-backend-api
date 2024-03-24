@@ -23,12 +23,14 @@ export class BookRepository {
 		const condition = {};
 
 		try {
-			const book: any = await prisma.book_view.findMany({
+			const books: any = await prisma.book_view.findMany({
 				//where: { id: bookId },
-				orderBy: [{}],
+				//orderBy: [{}],
 			});
 
-			return responseResult<IBookRow | null>(true, book);
+			console.log(books);
+
+			return responseResult<IBookRow | null>(true, books);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
@@ -52,6 +54,8 @@ export class BookRepository {
 		}
 
 		try {
+			console.log(newBook);
+
 			const bookId = uuidv4();
 			const newBookAuthors = await this.collectAuthors(bookId, newBook.author);
 			const newBookCategories = await this.collectCategories(
@@ -62,7 +66,16 @@ export class BookRepository {
 			const book = { ...newBook, id: bookId };
 
 			await prisma.$transaction([
-				prisma.book.create({ data: book }),
+				prisma.book.create({
+					data: {
+						id: book.id,
+						name: book.name,
+						description: book.description,
+						language: book.language,
+						price: book.price,
+						currency_id: book.currency_id,
+					},
+				}),
 				prisma.book_authors.deleteMany({
 					where: {
 						book_id: bookId,
@@ -81,26 +94,32 @@ export class BookRepository {
 				}),
 			]);
 
-			return responseResult(true, "Saved");
+			return responseResult(true, bookId);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
 	}
 
-	public async editBook(record: IBookEditPayload) {
-		if (!record.id) {
+	public async editBook(book: IBookEditPayload) {
+		if (!book.id) {
 			return responseResult(false, "Empty id");
 		}
 
 		try {
-			const bookId = record.id;
-			const authorIds = record.author;
+			const bookId = book.id;
+			const authorIds = book.author;
 
 			await prisma.book.update({
 				where: {
-					id: record.id,
+					id: book.id,
 				},
-				data: record,
+				data: {
+					name: book.name || undefined,
+					description: book.description || undefined,
+					language: book.language || undefined,
+					price: book.price || undefined,
+					currency_id: book.currency_id || undefined,
+				},
 			});
 
 			if (authorIds) {
@@ -124,7 +143,7 @@ export class BookRepository {
 				]);
 			}
 
-			const categoryIds = record.category;
+			const categoryIds = book.category;
 			if (categoryIds) {
 				const newBookCategories = categoryIds.map((categoryId) => {
 					return <IBookCategoryPayload>{
@@ -146,7 +165,7 @@ export class BookRepository {
 				]);
 			}
 
-			return responseResult(true, "Saved");
+			return responseResult(true, bookId);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

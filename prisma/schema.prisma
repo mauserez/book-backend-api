@@ -114,7 +114,7 @@ view book_view {
   language         String?  @db.VarChar
   description      String
   currency_acronym String   @db.VarChar
-  rating_count     BigInt?
+  rating_count     Decimal? @db.Decimal
   rating_value     Decimal? @db.Decimal
   created_at       DateTime @db.Timestamptz(6)
 }

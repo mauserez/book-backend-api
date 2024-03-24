@@ -40,7 +40,7 @@ export class BookRouter {
 
 		//отредактировать книгу  сделано
 		this._router.patch(
-			"/book/:id",
+			"/book",
 			async (
 				req: Request<{ id: string }, {}, IBookEditPayload>,
 				res: Response,

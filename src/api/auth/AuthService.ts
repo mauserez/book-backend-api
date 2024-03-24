@@ -17,8 +17,9 @@ export class AuthService {
 		let { login, password } = credentials;
 
 		const searchedAuth = await this.userRepository.getUserByLogin(login.trim());
-		if (searchedAuth.success && searchedAuth.result) {
-			return responseResult(false, "Auth already exists");
+		
+		if (searchedAuth.success) {
+			return responseResult(false, "User already exists");
 		}
 
 		password = await bcrypt.hash(password, 10);
@@ -29,12 +30,4 @@ export class AuthService {
 	public async login(credentials: IAuthLogin) {
 		return await this.authRepository.login(credentials);
 	}
-
-	/* public refreshToken(req: Request, res: Response, next: NextFunction) {
-		if (req.headers.authorization) {
-			const token = req.headers.authorization.split(" ")[1];
-			return this.authRepository.refresh(token);
-		}
-	}
- */
 }

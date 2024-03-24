@@ -75,7 +75,6 @@ export class BookController extends Controller {
 		next: NextFunction
 	) {
 		const book = await this.bookService.editBook(req.body);
-
 		return book;
 	}
 

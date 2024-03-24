@@ -6,13 +6,15 @@ SELECT
   b.description,
   c.currency_acronym,
   (
-    SELECT
-      count(1) AS count
-    FROM
-      rating r
-    WHERE
-      ((r.book_id) :: text = (b.id) :: text)
-  ) AS rating_count,
+    (
+      SELECT
+        count(1) AS count
+      FROM
+        rating r
+      WHERE
+        ((r.book_id) :: text = (b.id) :: text)
+    )
+  ) :: numeric AS rating_count,
   (
     SELECT
       avg(r.value) AS avg
