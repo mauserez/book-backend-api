@@ -13,11 +13,11 @@ export class AuthRepository {
 	public async register(credentials: IAuthRegister) {
 		try {
 			const { login, password } = credentials;
-			const auth = await prisma.user.create({
+			const user = await prisma.user.create({
 				data: { id: uuidv4(), login, password },
 			});
 
-			return responseResult(true, auth);
+			return responseResult(true, user);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
@@ -26,32 +26,32 @@ export class AuthRepository {
 	public async login(credentials: IAuthLogin) {
 		try {
 			const { login, password } = credentials;
-			const auth = await prisma.user.findFirst({
+			const user = await prisma.user.findFirst({
 				where: {
 					login: login,
 				},
 			});
 
-			if (!auth) {
+			if (!user) {
 				throw new Error("Auth credentials is not correct");
 			}
 
 			const isPasswordCorrect = await bcrypt.compare(
 				credentials.password,
-				auth.password
+				user.password
 			);
 
 			if (!isPasswordCorrect) {
 				return responseResult(false, "Invalid credentials");
 			}
 
-			const returnedAuth: Partial<IUserRow> = { ...auth };
-			delete returnedAuth.password;
+			const returnedUser: Partial<IUserRow> = { ...user };
+			delete returnedUser.password;
 
 			const token = jwtSign(
 				{
 					exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-					auth: { ...returnedAuth },
+					user: { ...returnedUser },
 				},
 				<string>process.env.JWT_SECRET
 			);
@@ -72,17 +72,17 @@ export class AuthRepository {
 					if (err) {
 						return responseResult(false, err.message);
 					} else {
-						const auth = await prisma.user.findFirst({
+						const user = await prisma.user.findFirst({
 							where: {
 								login: decodedJwt.user.login,
 							},
 						});
 
-						if (!auth) {
+						if (!user) {
 							throw new Error("Auth credentials is not correct");
 						}
 
-						const returnedAuth: Partial<IUserRow> = { ...auth };
+						const returnedAuth: Partial<IUserRow> = { ...user };
 						delete returnedAuth.password;
 
 						const token = jwtSign(
