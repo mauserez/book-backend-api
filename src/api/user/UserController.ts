@@ -1,12 +1,10 @@
-import { UserRepository } from "./UserRepository";
 import { Request, Response, NextFunction } from "express";
 import { Controller } from "../../core/Controller";
 
 import { UserService } from "./UserService";
-import { IUserEditPayload, IUserLogin, IUserRegister } from "./types";
+import { IUserEditPayload } from "./types";
 
 import { responseResult } from "../../helpers/resultHelper";
-import { verify } from "jsonwebtoken";
 
 export class UserController extends Controller {
 	private userService: UserService;

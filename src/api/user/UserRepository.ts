@@ -1,16 +1,6 @@
-import {
-	IUserCreatePayload,
-	IUserEditPayload,
-	IUserLogin,
-	IUserRegister,
-	IUserRow,
-} from "./types";
-import { v4 as uuidv4 } from "uuid";
+import { IUserEditPayload, IUserRow } from "./types";
 import { errorText, responseResult } from "../../helpers/resultHelper";
 import prisma from "../../prisma";
-import bcrypt from "bcrypt";
-import { sign as jwtSign, verify as jwtVerify } from "jsonwebtoken";
-import { JWT } from "../../core/middleware/AuthMiddleware";
 
 export class UserRepository {
 	public async getUsers() {

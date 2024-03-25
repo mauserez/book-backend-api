@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { UserController } from "./UserController";
-import { IUserCreatePayload, IUserEditPayload } from "./types";
+import { IUserEditPayload } from "./types";
 
 export class UserRouter {
 	private _router: Router;

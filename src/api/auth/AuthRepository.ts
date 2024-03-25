@@ -1,11 +1,13 @@
 import { IAuthLogin, IAuthRegister } from "./types";
+import { IUserRow } from "../user/types";
+
+import prisma from "../../prisma";
 import { v4 as uuidv4 } from "uuid";
 import { errorText, responseResult } from "../../helpers/resultHelper";
-import prisma from "../../prisma";
+
 import bcrypt from "bcrypt";
 import { sign as jwtSign, verify as jwtVerify } from "jsonwebtoken";
 import { JWT } from "../../core/middleware/AuthMiddleware";
-import { IUserRow } from "../user/types";
 
 export class AuthRepository {
 	public async register(credentials: IAuthRegister) {
