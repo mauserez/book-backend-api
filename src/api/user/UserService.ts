@@ -1,12 +1,5 @@
-import { responseResult } from "../../helpers/resultHelper";
-import {
-	IUserCreatePayload,
-	IUserEditPayload,
-	IUserLogin,
-	IUserRegister,
-} from "./types";
+import { IUserEditPayload } from "./types";
 import { UserRepository } from "./UserRepository";
-import bcrypt from "bcrypt";
 
 export class UserService {
 	userRepository: UserRepository;
