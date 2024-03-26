@@ -50,6 +50,9 @@ export class AuthMiddleware extends Middleware {
 	public parseToken(req: Request, res: Response) {
 		if (req.headers.authorization) {
 			const token = req.headers.authorization.split(" ")[1];
+			if (token.trim() === "") {
+				return null;
+			}
 			return jwtDecode(token) as JWT;
 		}
 		return null;
