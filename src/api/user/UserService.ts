@@ -1,4 +1,4 @@
-import { IUserEditPayload } from "./types";
+import { IUserEditPayload, IUserFavoritePayload } from "./types";
 import { UserRepository } from "./UserRepository";
 
 export class UserService {
@@ -22,5 +22,13 @@ export class UserService {
 
 	public async getUsers() {
 		return await this.userRepository.getUsers();
+	}
+
+	public async toggleFavorite(payload: IUserFavoritePayload) {
+		return await this.userRepository.toggleFavorite(payload);
+	}
+
+	public async isFavorite(payload: IUserFavoritePayload) {
+		return await this.userRepository.isFavorite(payload);
 	}
 }

@@ -16,21 +16,78 @@ export type GetBooksOptions = {
 	limit: number;
 	page: number;
 	perPage: boolean;
+	priceFrom: number;
+	priceTo: number;
+};
+
+export type GetBooksResult = {
+	books: IBookRow[];
+	bookCount: number;
+	pageCount: number;
+};
+
+export type WhereCondition = {
+	price: {};
+	book_categories?: {};
 };
 
 export class BookRepository {
 	public async getBooks(options: GetBooksOptions) {
-		const condition = {};
+		const { limit, category, page, perPage, priceFrom, priceTo } = options;
+		const take = limit;
+		const skip = (page - 1) * take;
 
 		try {
-			const books: any = await prisma.book_view.findMany({
-				//where: { id: bookId },
-				//orderBy: [{}],
+			const books: any = await prisma.book.findMany({
+				skip: skip,
+				take: take,
+				select: {
+					id: true,
+					name: true,
+					price: true,
+					language: true,
+					description: true,
+					book_categories: {
+						select: {
+							category_id: true,
+						},
+					},
+				},
+				where: {
+					price: { gte: priceFrom, lte: priceTo },
+					book_categories: {
+						some: {
+							category_id:
+								category.length > 0
+									? { in: category.map((category) => category) }
+									: {},
+						},
+					},
+				},
+				orderBy: [{ price: "asc" }],
 			});
 
-			console.log(books);
+			const bookCount = await prisma.book.count({
+				where: {
+					price: { gte: priceFrom, lte: priceTo },
+					book_categories: {
+						some: {
+							category_id:
+								category.length > 0
+									? { in: category.map((category) => category) }
+									: {},
+						},
+					},
+				},
+			});
 
-			return responseResult<IBookRow | null>(true, books);
+			const pageCount = Math.ceil(bookCount / take);
+
+			return responseResult<GetBooksResult | null>(true, {
+				books,
+				bookCount,
+				pageCount,
+			});
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

@@ -1,10 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { AuthorController } from "./AuthorController";
 import { IAuthorCreatePayload, IAuthorEditPayload } from "./types";
+import { AuthMiddleware } from "../../core/middleware";
 
 export class AuthorRouter {
 	private _router: Router;
-	constructor(authorController: AuthorController) {
+	constructor(
+		authorController: AuthorController,
+		authMiddleware: AuthMiddleware
+	) {
 		this._router = Router();
 
 		//все author
@@ -32,6 +36,7 @@ export class AuthorRouter {
 		//добавить author
 		this._router.post(
 			"/author",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{}, {}, IAuthorCreatePayload>,
 				res: Response,
@@ -45,6 +50,7 @@ export class AuthorRouter {
 		//отредактировать author
 		this._router.patch(
 			"/author",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{ id: string }, {}, IAuthorEditPayload>,
 				res: Response,
@@ -58,6 +64,7 @@ export class AuthorRouter {
 		//удалить author
 		this._router.delete(
 			"/author/:id",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{ id: string }>,
 				res: Response,

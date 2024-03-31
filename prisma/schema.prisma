@@ -31,6 +31,10 @@ model book {
   book_authors    book_authors[]
   book_categories book_categories[]
   user_books      user_books[]
+
+  @@index([description], map: "idx_book_description")
+  @@index([name], map: "idx_book_name")
+  @@index([price], map: "idx_book_price")
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -114,7 +118,7 @@ view book_view {
   language         String?  @db.VarChar
   description      String
   currency_acronym String   @db.VarChar
-  rating_count     Decimal? @db.Decimal
-  rating_value     Decimal? @db.Decimal
+  reviews          Decimal? @db.Decimal
+  rating           Decimal? @db.Decimal
   created_at       DateTime @db.Timestamptz(6)
 }

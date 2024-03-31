@@ -1,5 +1,6 @@
-import { IUserEditPayload, IUserRow } from "./types";
+import { IUserEditPayload, IUserFavoritePayload, IUserRow } from "./types";
 import { errorText, responseResult } from "../../helpers/resultHelper";
+import { v4 as uuidv4 } from "uuid";
 import prisma from "../../prisma";
 
 export class UserRepository {
@@ -64,6 +65,56 @@ export class UserRepository {
 			});
 
 			return user ? responseResult(true, user) : responseResult(false, null);
+		} catch (error) {
+			return responseResult(false, errorText(error));
+		}
+	}
+
+	public async toggleFavorite(payload: IUserFavoritePayload) {
+		const { book_id, user_id } = payload;
+
+		try {
+			const result = await prisma.user_books.findFirst({
+				where: {
+					user_id: user_id,
+					book_id: book_id,
+				},
+			});
+
+			if (result) {
+				await prisma.user_books.deleteMany({
+					where: { AND: { book_id: book_id, user_id: user_id } },
+				});
+			} else {
+				await prisma.user_books.create({
+					data: {
+						id: uuidv4(),
+						book_id: book_id,
+						user_id: user_id,
+					},
+				});
+			}
+
+			return responseResult(true, "success");
+		} catch (error) {
+			return responseResult(false, errorText(error));
+		}
+	}
+
+	public async isFavorite(payload: IUserFavoritePayload) {
+		const { book_id, user_id } = payload;
+
+		try {
+			const result = await prisma.user_books.findFirst({
+				where: {
+					user_id: user_id,
+					book_id: book_id,
+				},
+			});
+
+			console.log(result);
+
+			return responseResult(true, !!result);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

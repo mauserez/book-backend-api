@@ -17,9 +17,9 @@ export class AuthService {
 		let { login, password } = credentials;
 
 		const searchedAuth = await this.userRepository.getUserByLogin(login.trim());
-		
+
 		if (searchedAuth.success) {
-			return responseResult(false, "User already exists");
+			return responseResult(false, "Пользователь уже существует");
 		}
 
 		password = await bcrypt.hash(password, 10);

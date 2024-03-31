@@ -78,25 +78,26 @@ export class App {
 		userController: UserController
 	) {
 		this.app = express();
+		this._auth = new AuthMiddleware();
 		this.port = Number(process.env.APP_PORT) || 5001;
 		this.authRouter = new AuthRouter(authController);
-		this.authorRouter = new AuthorRouter(authorController);
-		this.booksRouter = new BookRouter(bookController);
-		this.categoryRouter = new CategoryRouter(categoryController);
-		this.currencyRouter = new CurrencyRouter(currencyController);
-		this.ratingRouter = new RatingRouter(ratingController);
+		this.authorRouter = new AuthorRouter(authorController, this._auth);
+		this.booksRouter = new BookRouter(bookController, this._auth);
+		this.categoryRouter = new CategoryRouter(categoryController, this._auth);
+		this.currencyRouter = new CurrencyRouter(currencyController, this._auth);
+		this.ratingRouter = new RatingRouter(ratingController, this._auth);
 		this.userRouter = new UserRouter(userController);
-		this._auth = new AuthMiddleware();
 	}
 
 	private configureRoutes() {
 		this.app.use("/api/v1", this.authRouter.router);
+		this.app.use("/api/v1", this.booksRouter.router);
+		this.app.use("/api/v1", this.authorRouter.router);
+		this.app.use("/api/v1", this.categoryRouter.router);
+		this.app.use("/api/v1", this.currencyRouter.router);
+		this.app.use("/api/v1", this.ratingRouter.router);
+
 		this.app.use("/api/v1", this._auth.verifyAuth, this.userRouter.router);
-		this.app.use("/api/v1", this._auth.verifyAuth, this.authorRouter.router);
-		this.app.use("/api/v1", this._auth.verifyAuth, this.booksRouter.router);
-		this.app.use("/api/v1", this._auth.verifyAuth, this.categoryRouter.router);
-		this.app.use("/api/v1", this._auth.verifyAuth, this.currencyRouter.router);
-		this.app.use("/api/v1", this._auth.verifyAuth, this.ratingRouter.router);
 	}
 
 	public async run() {

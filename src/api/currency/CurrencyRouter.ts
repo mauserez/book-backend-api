@@ -1,10 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { CurrencyController } from "./CurrencyController";
 import { ICurrencyCreatePayload, ICurrencyEditPayload } from "./types";
+import { AuthMiddleware } from "../../core/middleware";
 
 export class CurrencyRouter {
 	private _router: Router;
-	constructor(currencyController: CurrencyController) {
+	constructor(
+		currencyController: CurrencyController,
+		authMiddleware: AuthMiddleware
+	) {
 		this._router = Router();
 
 		//все currency
@@ -36,6 +40,7 @@ export class CurrencyRouter {
 		//добавить currency
 		this._router.post(
 			"/currency",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{}, {}, ICurrencyCreatePayload>,
 				res: Response,
@@ -49,6 +54,7 @@ export class CurrencyRouter {
 		//отредактировать currency
 		this._router.patch(
 			"/currency",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{ id: string }, {}, ICurrencyEditPayload>,
 				res: Response,
@@ -62,6 +68,7 @@ export class CurrencyRouter {
 		//удалить currency
 		this._router.delete(
 			"/currency/:id",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{ id: string }>,
 				res: Response,

@@ -1,3 +1,4 @@
+import { token } from "./../../placeholders";
 import { IAuthLogin, IAuthRegister } from "./types";
 import { IUserRow } from "../user/types";
 
@@ -10,14 +11,29 @@ import { sign as jwtSign, verify as jwtVerify } from "jsonwebtoken";
 import { JWT } from "../../core/middleware/AuthMiddleware";
 
 export class AuthRepository {
+	private returnTokenWithoutPassword = (user: IUserRow) => {
+		const returnedUser: Partial<IUserRow> = { ...user };
+		delete returnedUser.password;
+
+		const token = jwtSign(
+			{
+				exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+				user: { ...returnedUser },
+			},
+			<string>process.env.JWT_SECRET
+		);
+
+		return token;
+	};
+
 	public async register(credentials: IAuthRegister) {
 		try {
 			const { login, password } = credentials;
 			const user = await prisma.user.create({
 				data: { id: uuidv4(), login, password },
 			});
-
-			return responseResult(true, user);
+			const token = this.returnTokenWithoutPassword(user);
+			return responseResult(true, token);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
@@ -33,28 +49,16 @@ export class AuthRepository {
 			});
 
 			if (!user) {
-				throw new Error("Auth credentials is not correct");
+				throw new Error("Проверьте логин или пароль");
 			}
 
-			const isPasswordCorrect = await bcrypt.compare(
-				credentials.password,
-				user.password
-			);
+			const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
 			if (!isPasswordCorrect) {
-				return responseResult(false, "Invalid credentials");
+				return responseResult(false, "Проверьте логин или пароль");
 			}
 
-			const returnedUser: Partial<IUserRow> = { ...user };
-			delete returnedUser.password;
-
-			const token = jwtSign(
-				{
-					exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-					user: { ...returnedUser },
-				},
-				<string>process.env.JWT_SECRET
-			);
+			const token = this.returnTokenWithoutPassword(user);
 
 			return responseResult(true, token);
 		} catch (error) {
@@ -82,16 +86,7 @@ export class AuthRepository {
 							throw new Error("Auth credentials is not correct");
 						}
 
-						const returnedAuth: Partial<IUserRow> = { ...user };
-						delete returnedAuth.password;
-
-						const token = jwtSign(
-							{
-								exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
-								auth: { returnedAuth },
-							},
-							<string>process.env.JWT_SECRET
-						);
+						const token = this.returnTokenWithoutPassword(user);
 
 						return responseResult(true, token);
 					}

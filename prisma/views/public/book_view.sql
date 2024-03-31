@@ -14,7 +14,7 @@ SELECT
       WHERE
         ((r.book_id) :: text = (b.id) :: text)
     )
-  ) :: numeric AS rating_count,
+  ) :: numeric AS reviews,
   (
     SELECT
       avg(r.value) AS avg
@@ -22,7 +22,7 @@ SELECT
       rating r
     WHERE
       ((r.book_id) :: text = (b.id) :: text)
-  ) AS rating_value,
+  ) AS rating,
   b.created_at
 FROM
   (

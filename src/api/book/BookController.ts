@@ -20,18 +20,28 @@ export class BookController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
+		console.log(req.query);
+
 		const request = req.query;
 
-		const limit = !request.limit ? 10 : Number(request.limit);
+		const limit = !request.limit ? 4 : Number(request.limit);
 		const page = !request.page ? 1 : Number(request.page);
+		const priceFrom = !!request.priceFrom ? Number(request.priceFrom) : 0;
+		const priceTo = !!request.priceTo ? Number(request.priceTo) : 100000;
 		const perPage = !!request.perPage;
-		const category = !req.query.category ? [] : req.query.category;
+		const category = !request.category
+			? []
+			: Array.isArray(request.category)
+			? request.category
+			: [request.category];
 
 		const options = {
 			category: category,
 			limit: limit,
 			page: page,
 			perPage: perPage,
+			priceFrom: priceFrom,
+			priceTo: priceTo,
 		};
 
 		const books = await this.bookService.getBooks(options);

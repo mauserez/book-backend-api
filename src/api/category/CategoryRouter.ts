@@ -1,10 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { CategoryController } from "./CategoryController";
 import { ICategoryCreatePayload, ICategoryEditPayload } from "./types";
+import { AuthMiddleware } from "../../core/middleware";
 
 export class CategoryRouter {
 	private _router: Router;
-	constructor(categoryController: CategoryController) {
+	constructor(
+		categoryController: CategoryController,
+		authMiddleware: AuthMiddleware
+	) {
 		this._router = Router();
 
 		//все category

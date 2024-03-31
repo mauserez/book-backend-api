@@ -9,8 +9,8 @@ export interface IBookRow {
 	language: string | null;
 	description: string;
 	currency_acronym: string;
-	rating_count: number | Decimal | null;
-	rating_value: number | Decimal | null;
+	reviews: number | Decimal | null;
+	rating: number | Decimal | null;
 }
 
 export interface IBookEditPayload {
@@ -50,4 +50,6 @@ export interface IBooksPayload {
 	author: IAuthorRow["id"][];
 	category: ICategoryRow["id"][];
 	limit: number;
+	priceFrom: number;
+	priceTo: number;
 }

@@ -12,6 +12,11 @@ export type IUserEditPayload = {
 	description?: string;
 };
 
+export type IUserFavoritePayload = {
+	book_id: string;
+	user_id: string;
+};
+
 export type IUserCreatePayload = {
 	login: string;
 	password: string;

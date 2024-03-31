@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { Controller } from "../../core/Controller";
 
 import { UserService } from "./UserService";
-import { IUserEditPayload } from "./types";
+import { IUserEditPayload, IUserFavoritePayload } from "./types";
 
 import { responseResult } from "../../helpers/resultHelper";
 
@@ -61,4 +61,36 @@ export class UserController extends Controller {
 		const result = await this.userService.deleteUser(req.params.id);
 		return result;
 	} */
+
+	async toggleFavorite(
+		req: Request<{}, {}, { id: string }>,
+		res: Response,
+		next: NextFunction
+	) {
+		if (!req.body.id) {
+			return responseResult(false, "Field id is empty");
+		}
+
+		const { id } = req.body;
+		const favObject = { book_id: id, user_id: res.locals.userId };
+
+		const result = await this.userService.toggleFavorite(favObject);
+		return result;
+	}
+
+	async isFavorite(
+		req: Request<{}, {}, { id: string }>,
+		res: Response,
+		next: NextFunction
+	) {
+		if (!req.query.id) {
+			return responseResult(false, "Field id is empty");
+		}
+
+		const { id } = req.query;
+		const favObject = { book_id: String(id), user_id: res.locals.userId };
+
+		const result = await this.userService.isFavorite(favObject);
+		return result;
+	}
 }

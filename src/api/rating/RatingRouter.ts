@@ -1,10 +1,14 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { RatingController } from "./RatingController";
 import { IRatingCreatePayload, IRatingEditPayload } from "./types";
+import { AuthMiddleware } from "../../core/middleware";
 
 export class RatingRouter {
 	private _router: Router;
-	constructor(ratingController: RatingController) {
+	constructor(
+		ratingController: RatingController,
+		authMiddleware: AuthMiddleware
+	) {
 		this._router = Router();
 
 		//rating по id
@@ -28,6 +32,7 @@ export class RatingRouter {
 		//добавить оценку rating
 		this._router.post(
 			"/rating",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{}, {}, IRatingCreatePayload>,
 				res: Response,
@@ -41,6 +46,7 @@ export class RatingRouter {
 		//отредактировать оценку rating
 		this._router.patch(
 			"/rating",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{}, {}, IRatingEditPayload>,
 				res: Response,
@@ -54,6 +60,7 @@ export class RatingRouter {
 		//удалить оценку rating
 		this._router.delete(
 			"/rating/:id",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{ id: string }>,
 				res: Response,

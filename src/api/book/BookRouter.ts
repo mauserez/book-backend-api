@@ -1,10 +1,11 @@
+import { AuthMiddleware } from "./../../core/middleware/AuthMiddleware";
 import { Router, Request, Response, NextFunction } from "express";
 import { IBooksPayload, IBookEditPayload, IBookCreatePayload } from "./types";
 import { BookController } from "./BookController";
 
 export class BookRouter {
 	private _router: Router;
-	constructor(bookController: BookController) {
+	constructor(bookController: BookController, authMiddleware: AuthMiddleware) {
 		this._router = Router();
 
 		// получить список книг
@@ -32,6 +33,7 @@ export class BookRouter {
 		//создать новую книгу
 		this._router.post(
 			"/book",
+			authMiddleware.verifyAuth,
 			async (req: Request<{}, {}, IBookCreatePayload>, res: Response, next) => {
 				const book = await bookController.postBook(req, res, next);
 				res.send(book);
@@ -41,6 +43,7 @@ export class BookRouter {
 		//отредактировать книгу  сделано
 		this._router.patch(
 			"/book",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{ id: string }, {}, IBookEditPayload>,
 				res: Response,
@@ -54,6 +57,7 @@ export class BookRouter {
 		//удалить книгу
 		this._router.delete(
 			"/book/:id",
+			authMiddleware.verifyAuth,
 			async (
 				req: Request<{ id: string }>,
 				res: Response,

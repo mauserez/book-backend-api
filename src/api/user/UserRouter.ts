@@ -37,10 +37,6 @@ export class UserRouter {
 				res: Response,
 				next: NextFunction
 			) => {
-				if (res.locals.userId) {
-					res.send("Not auth.Bad user id");
-					return;
-				}
 				req.body.id = res.locals.userId;
 				const result = await userController.patchUser(req, res, next);
 				res.send(result);
@@ -60,10 +56,19 @@ export class UserRouter {
 			}
 		); */
 
-		//login
-		this._router.post("/user/books", async (req, res, next) => {
-			//const books = await userController.login(req, res, next);
+		/* this._router.post("/user/books", async (req, res, next) => {
+			const books = await userController.login(req, res, next);
 			res.send([]);
+		}); */
+
+		this._router.post("/user-books/toggle-favorite", async (req, res, next) => {
+			const result = await userController.toggleFavorite(req, res, next);
+			res.send(result);
+		});
+
+		this._router.get("/user-books/is-favorite", async (req, res, next) => {
+			const result = await userController.isFavorite(req, res, next);
+			res.send(result);
 		});
 	}
 
