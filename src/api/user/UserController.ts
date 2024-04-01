@@ -93,4 +93,15 @@ export class UserController extends Controller {
 		const result = await this.userService.isFavorite(favObject);
 		return result;
 	}
+
+	async userBooks(
+		req: Request<{}, {}, { id: string }>,
+		res: Response,
+		next: NextFunction
+	) {
+		const { userId } = res.locals.userId;
+
+		const result = await this.userService.userBooks(userId);
+		return result;
+	}
 }

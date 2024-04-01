@@ -2,6 +2,7 @@ import { IUserEditPayload, IUserFavoritePayload, IUserRow } from "./types";
 import { errorText, responseResult } from "../../helpers/resultHelper";
 import { v4 as uuidv4 } from "uuid";
 import prisma from "../../prisma";
+import { BOOKS_SELECT } from "../book/BookRepository";
 
 export class UserRepository {
 	public async getUsers() {
@@ -115,6 +116,28 @@ export class UserRepository {
 			console.log(result);
 
 			return responseResult(true, !!result);
+		} catch (error) {
+			return responseResult(false, errorText(error));
+		}
+	}
+
+	public async userBooks(userId: string) {
+		try {
+			const userBooks: any = await prisma.book.findMany({
+				select: BOOKS_SELECT,
+				where: {
+					user_books: {
+						some: {
+							user_id: userId,
+						},
+					},
+				},
+			});
+
+			console.log(userId);
+			console.log(userBooks);
+
+			return responseResult(true, userBooks);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

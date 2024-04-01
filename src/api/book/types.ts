@@ -2,6 +2,11 @@ import { Decimal } from "@prisma/client/runtime/library";
 import { IAuthorRow } from "../author/types";
 import { ICategoryRow } from "../category/types";
 
+export interface IBookRating {
+	rating: number | null;
+	reviews: number | null;
+}
+
 export interface IBookRow {
 	id: string;
 	name: string;

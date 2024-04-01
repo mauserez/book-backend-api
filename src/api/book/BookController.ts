@@ -95,4 +95,17 @@ export class BookController extends Controller {
 	) {
 		return await this.bookService.deleteBook(req.params.id);
 	}
+
+	async getBookRating(
+		req: Request<{}, {}, { id: string }>,
+		res: Response,
+		next: NextFunction
+	) {
+		if (!req.query.id) {
+			return responseResult(false, "Book id is empty");
+		}
+
+		const book = await this.bookService.getBookRating(String(req.query.id));
+		return book;
+	}
 }

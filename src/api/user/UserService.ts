@@ -31,4 +31,8 @@ export class UserService {
 	public async isFavorite(payload: IUserFavoritePayload) {
 		return await this.userRepository.isFavorite(payload);
 	}
+
+	public async userBooks(userId: string) {
+		return await this.userRepository.userBooks(userId);
+	}
 }

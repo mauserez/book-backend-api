@@ -61,6 +61,12 @@ export class UserRouter {
 			res.send([]);
 		}); */
 
+		this._router.get("/user-books", async (req, res, next) => {
+			console.log(123);
+			const result = await userController.userBooks(req, res, next);
+			res.send(result);
+		});
+
 		this._router.post("/user-books/toggle-favorite", async (req, res, next) => {
 			const result = await userController.toggleFavorite(req, res, next);
 			res.send(result);

@@ -27,4 +27,8 @@ export class BookService {
 	public async getBooks(options: GetBooksOptions) {
 		return await this.bookRepository.getBooks(options);
 	}
+
+	public async getBookRating(id: string) {
+		return await this.bookRepository.getBookRating(id);
+	}
 }

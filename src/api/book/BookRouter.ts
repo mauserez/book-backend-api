@@ -67,6 +67,14 @@ export class BookRouter {
 				res.send(result);
 			}
 		);
+
+		this._router.get(
+			"/book-rating",
+			async (req: Request<{}, {}, { id: string }>, res: Response, next) => {
+				const result = await bookController.getBookRating(req, res, next);
+				res.send(result);
+			}
+		);
 	}
 
 	get router() {

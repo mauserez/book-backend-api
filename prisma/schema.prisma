@@ -30,6 +30,7 @@ model book {
   currency        currency          @relation(fields: [currency_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "public_book_currency_id_fkey")
   book_authors    book_authors[]
   book_categories book_categories[]
+  rating          rating[]
   user_books      user_books[]
 
   @@index([description], map: "idx_book_description")
@@ -86,6 +87,7 @@ model rating {
   book_id    String   @db.VarChar
   user_id    String   @db.VarChar
   created_at DateTime @default(now()) @db.Timestamptz(6)
+  book       book     @relation(fields: [book_id], references: [id], onDelete: Cascade, map: "public_rating_book_id_fkey")
   user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "public_rating_user_id_fkey")
 }
 

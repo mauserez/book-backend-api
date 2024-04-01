@@ -4,6 +4,7 @@ import {
 	IBookEditPayload,
 	IBookCategoryPayload,
 	IBookCreatePayload,
+	IBookRating,
 } from "./types";
 
 import { ICategoryRow } from "../category/types";
@@ -31,6 +32,35 @@ export type WhereCondition = {
 	book_categories?: {};
 };
 
+export const BOOKS_SELECT = {
+	id: true,
+	name: true,
+	price: true,
+	language: true,
+	description: true,
+	book_authors: {
+		select: {
+			author_id: true,
+			author: {
+				select: {
+					last_name: true,
+					first_name: true,
+				},
+			},
+		},
+	},
+	book_categories: {
+		select: {
+			category_id: true,
+			category: {
+				select: {
+					name: true,
+				},
+			},
+		},
+	},
+};
+
 export class BookRepository {
 	public async getBooks(options: GetBooksOptions) {
 		const { limit, category, page, perPage, priceFrom, priceTo } = options;
@@ -41,18 +71,7 @@ export class BookRepository {
 			const books: any = await prisma.book.findMany({
 				skip: skip,
 				take: take,
-				select: {
-					id: true,
-					name: true,
-					price: true,
-					language: true,
-					description: true,
-					book_categories: {
-						select: {
-							category_id: true,
-						},
-					},
-				},
+				select: BOOKS_SELECT,
 				where: {
 					price: { gte: priceFrom, lte: priceTo },
 					book_categories: {
@@ -269,6 +288,27 @@ export class BookRepository {
 			});
 
 			return responseResult(true, "Deleted");
+		} catch (error) {
+			return responseResult(false, errorText(error));
+		}
+	}
+
+	public async getBookRating(bookId: string) {
+		try {
+			const book = await prisma.rating.aggregate({
+				_avg: {
+					value: true,
+				},
+				_count: true,
+				where: { id: bookId },
+			});
+
+			const result = {
+				rating: Number(book._avg),
+				reviews: Number(book._count),
+			};
+
+			return responseResult<IBookRating | null>(true, result);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}
