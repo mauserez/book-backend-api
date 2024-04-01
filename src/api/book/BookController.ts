@@ -20,8 +20,6 @@ export class BookController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		console.log(req.query);
-
 		const request = req.query;
 
 		const limit = !request.limit ? 4 : Number(request.limit);
@@ -29,14 +27,22 @@ export class BookController extends Controller {
 		const priceFrom = !!request.priceFrom ? Number(request.priceFrom) : 0;
 		const priceTo = !!request.priceTo ? Number(request.priceTo) : 100000;
 		const perPage = !!request.perPage;
+
 		const category = !request.category
 			? []
 			: Array.isArray(request.category)
 			? request.category
 			: [request.category];
 
+		const author = !request.author
+			? []
+			: Array.isArray(request.author)
+			? request.author
+			: [request.author];
+
 		const options = {
 			category: category,
+			author: author,
 			limit: limit,
 			page: page,
 			perPage: perPage,

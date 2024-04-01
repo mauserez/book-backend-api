@@ -11,9 +11,11 @@ import { ICategoryRow } from "../category/types";
 import { errorText, responseResult } from "../../helpers/resultHelper";
 import { v4 as uuidv4 } from "uuid";
 import prisma from "../../prisma";
+import { IAuthorRow } from "../author/types";
 
 export type GetBooksOptions = {
 	category: ICategoryRow["id"][];
+	author: IAuthorRow["id"][];
 	limit: number;
 	page: number;
 	perPage: boolean;
@@ -63,7 +65,8 @@ export const BOOKS_SELECT = {
 
 export class BookRepository {
 	public async getBooks(options: GetBooksOptions) {
-		const { limit, category, page, perPage, priceFrom, priceTo } = options;
+		const { limit, category, author, page, perPage, priceFrom, priceTo } =
+			options;
 		const take = limit;
 		const skip = (page - 1) * take;
 
@@ -82,6 +85,12 @@ export class BookRepository {
 									: {},
 						},
 					},
+					book_authors: {
+						some: {
+							author_id:
+								author.length > 0 ? { in: author.map((author) => author) } : {},
+						},
+					},
 				},
 				orderBy: [{ price: "asc" }],
 			});
@@ -95,6 +104,12 @@ export class BookRepository {
 								category.length > 0
 									? { in: category.map((category) => category) }
 									: {},
+						},
+					},
+					book_authors: {
+						some: {
+							author_id:
+								author.length > 0 ? { in: author.map((author) => author) } : {},
 						},
 					},
 				},
