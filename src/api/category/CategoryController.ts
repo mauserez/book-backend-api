@@ -2,7 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { Controller } from "../../core/Controller";
 
 import { CategoryService } from "./CategoryService";
-import { ICategoryEditPayload, ICategoryCreatePayload } from "./types";
+import {
+	ICategoryEditPayload,
+	ICategoryCreatePayload,
+	ICategorySavePayload,
+} from "./types";
 
 import { responseResult } from "../../helpers/resultHelper";
 import { v4 as uuidv4 } from "uuid";
@@ -21,6 +25,23 @@ export class CategoryController extends Controller {
 		next: NextFunction
 	) {
 		const result = await this.categoryService.getCategories();
+		return result;
+	}
+
+	async postCategories(
+		req: Request<{}, {}, ICategorySavePayload[]>,
+		res: Response,
+		next: NextFunction
+	) {
+		const categories = req.body;
+		categories.map((category) => {
+			const { id, name } = category;
+			if (!name) {
+				return responseResult(false, "Field name is empty");
+			}
+		});
+
+		const result = await this.categoryService.saveCategories(categories);
 		return result;
 	}
 

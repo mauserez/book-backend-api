@@ -40,6 +40,13 @@ export const BOOKS_SELECT = {
 	price: true,
 	language: true,
 	description: true,
+	currency: {
+		select: {
+			id: true,
+			currency_name: true,
+			currency_acronym: true,
+		},
+	},
 	book_authors: {
 		select: {
 			author_id: true,
@@ -129,7 +136,8 @@ export class BookRepository {
 
 	public async getBook(bookId: string) {
 		try {
-			const book: any = await prisma.book_view.findUnique({
+			const book: any = await prisma.book.findFirst({
+				select: BOOKS_SELECT,
 				where: { id: bookId },
 			});
 
@@ -145,8 +153,6 @@ export class BookRepository {
 		}
 
 		try {
-			console.log(newBook);
-
 			const bookId = uuidv4();
 			const newBookAuthors = await this.collectAuthors(bookId, newBook.author);
 			const newBookCategories = await this.collectCategories(

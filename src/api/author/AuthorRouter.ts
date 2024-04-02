@@ -1,6 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { AuthorController } from "./AuthorController";
-import { IAuthorCreatePayload, IAuthorEditPayload } from "./types";
+import {
+	IAuthorCreatePayload,
+	IAuthorEditPayload,
+	IAuthorsSavePayload,
+} from "./types";
 import { AuthMiddleware } from "../../core/middleware";
 
 export class AuthorRouter {
@@ -21,6 +25,20 @@ export class AuthorRouter {
 			) => {
 				const authors = await authorController.getAuthors(req, res, next);
 				res.send(authors);
+			}
+		);
+
+		//добавить authors
+		this._router.post(
+			"/authors",
+			authMiddleware.verifyAuth,
+			async (
+				req: Request<{}, {}, IAuthorsSavePayload>,
+				res: Response,
+				next
+			) => {
+				const result = await authorController.postAuthors(req, res, next);
+				res.send(result);
 			}
 		);
 

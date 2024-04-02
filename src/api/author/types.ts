@@ -12,4 +12,8 @@ export type IAuthorEditPayload = {
 	years_active?: string;
 };
 
+export type IAuthorsSavePayload = IAuthorEditPayload[];
+
+export type IAuthorsSavePayloadRequired = Required<IAuthorEditPayload>[];
+
 export type IAuthorCreatePayload = Omit<IAuthorRow, "id">;

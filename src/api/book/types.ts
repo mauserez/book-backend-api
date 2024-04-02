@@ -1,4 +1,3 @@
-import { Decimal } from "@prisma/client/runtime/library";
 import { IAuthorRow } from "../author/types";
 import { ICategoryRow } from "../category/types";
 
@@ -13,9 +12,16 @@ export interface IBookRow {
 	price: number;
 	language: string | null;
 	description: string;
-	currency_acronym: string;
-	reviews: number | Decimal | null;
-	rating: number | Decimal | null;
+	currency: {
+		id: string;
+		currency_acronym: string;
+		currency_name: string;
+	};
+	book_categories: { category: { name: string }; category_id: string }[];
+	book_authors: {
+		author: { first_name: string; last_name: string };
+		author_id: string;
+	}[];
 }
 
 export interface IBookEditPayload {
@@ -30,6 +36,7 @@ export interface IBookEditPayload {
 }
 
 export interface IBookCreatePayload {
+	id?: string;
 	name: string;
 	price: number;
 	language: string;

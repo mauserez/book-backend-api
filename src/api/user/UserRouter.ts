@@ -62,7 +62,6 @@ export class UserRouter {
 		}); */
 
 		this._router.get("/user-books", async (req, res, next) => {
-			console.log(123);
 			const result = await userController.userBooks(req, res, next);
 			res.send(result);
 		});

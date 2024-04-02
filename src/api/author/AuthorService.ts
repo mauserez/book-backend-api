@@ -1,5 +1,11 @@
-import { IAuthorCreatePayload, IAuthorEditPayload } from "./types";
+import {
+	IAuthorCreatePayload,
+	IAuthorEditPayload,
+	IAuthorsSavePayload,
+	IAuthorsSavePayloadRequired,
+} from "./types";
 import { AuthorRepository } from "./AuthorRepository";
+import { v4 as uuidv4 } from "uuid";
 
 export class AuthorService {
 	authorRepository: AuthorRepository;
@@ -26,5 +32,18 @@ export class AuthorService {
 
 	public async getAuthors() {
 		return await this.authorRepository.getAuthors();
+	}
+
+	public async saveAuthors(authors: IAuthorsSavePayload) {
+		const preparedAuthors = authors.map((author) => {
+			return {
+				id: author.id || uuidv4(),
+				first_name: author.first_name || "",
+				last_name: author.last_name || "",
+				years_active: author.years_active || "",
+			};
+		});
+
+		return await this.authorRepository.saveAuthors(preparedAuthors);
 	}
 }

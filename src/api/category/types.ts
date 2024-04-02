@@ -8,4 +8,7 @@ export interface ICategoryEditPayload {
 	name: string;
 }
 
+export type ICategorySavePayload = Partial<ICategoryEditPayload>;
+export type ICategorySavePayloadRequired = Required<ICategoryEditPayload>;
+
 export type ICategoryCreatePayload = Omit<ICategoryEditPayload, "id">;

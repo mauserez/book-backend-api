@@ -113,8 +113,6 @@ export class UserRepository {
 				},
 			});
 
-			console.log(result);
-
 			return responseResult(true, !!result);
 		} catch (error) {
 			return responseResult(false, errorText(error));
@@ -133,9 +131,6 @@ export class UserRepository {
 					},
 				},
 			});
-
-			console.log(userId);
-			console.log(userBooks);
 
 			return responseResult(true, userBooks);
 		} catch (error) {

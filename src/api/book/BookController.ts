@@ -74,8 +74,9 @@ export class BookController extends Controller {
 		next: NextFunction
 	) {
 		let key: keyof typeof req.body;
+
 		for (key in req.body) {
-			if (!req.body[key]) {
+			if (!req.body[key] && key !== "id") {
 				return responseResult(false, `${key} is empty`);
 			}
 		}

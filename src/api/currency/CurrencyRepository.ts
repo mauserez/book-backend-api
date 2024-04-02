@@ -11,7 +11,8 @@ export class CurrencyRepository {
 	public async getCurrencies() {
 		try {
 			const currencies = await prisma.currency.findMany();
-			return responseResult<ICurrencyRow[] | null>(true, currencies);
+
+			return responseResult<ICurrencyRow[] | []>(true, currencies);
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

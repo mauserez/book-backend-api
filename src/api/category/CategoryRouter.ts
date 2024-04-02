@@ -1,6 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { CategoryController } from "./CategoryController";
-import { ICategoryCreatePayload, ICategoryEditPayload } from "./types";
+import {
+	ICategoryCreatePayload,
+	ICategoryEditPayload,
+	ICategorySavePayload,
+} from "./types";
 import { AuthMiddleware } from "../../core/middleware";
 
 export class CategoryRouter {
@@ -14,17 +18,26 @@ export class CategoryRouter {
 		//все category
 		this._router.get(
 			"/categories",
-			async (
-				req: Request<{}, {}, {}, {}>,
-				res: Response,
-				next: NextFunction
-			) => {
+			async (req: Request<{}, {}, {}>, res: Response, next: NextFunction) => {
 				const categories = await categoryController.getCategories(
 					req,
 					res,
 					next
 				);
 				res.send(categories);
+			}
+		);
+
+		//сохранить category
+		this._router.post(
+			"/categories",
+			async (
+				req: Request<{}, {}, ICategorySavePayload[]>,
+				res: Response,
+				next: NextFunction
+			) => {
+				const result = await categoryController.postCategories(req, res, next);
+				res.send(result);
 			}
 		);
 

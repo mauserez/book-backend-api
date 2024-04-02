@@ -1,4 +1,10 @@
-import { IAuthorCreatePayload, IAuthorEditPayload, IAuthorRow } from "./types";
+import {
+	IAuthorCreatePayload,
+	IAuthorEditPayload,
+	IAuthorRow,
+	IAuthorsSavePayload,
+	IAuthorsSavePayloadRequired,
+} from "./types";
 import { v4 as uuidv4 } from "uuid";
 import { errorText, responseResult } from "../../helpers/resultHelper";
 import prisma from "../../prisma";
@@ -6,8 +12,39 @@ import prisma from "../../prisma";
 export class AuthorRepository {
 	public async getAuthors() {
 		try {
-			const authors = await prisma.author.findMany();
+			const authors = await prisma.author.findMany({
+				orderBy: { last_name: "asc" },
+			});
+
 			return responseResult<IAuthorRow[] | null>(true, authors);
+		} catch (error) {
+			return responseResult(false, errorText(error));
+		}
+	}
+
+	public async saveAuthors(authors: IAuthorsSavePayloadRequired) {
+		const authorsIds = authors.map((author) => author.id);
+
+		try {
+			await prisma.author.deleteMany({
+				where: {
+					NOT: {
+						id: { in: authorsIds },
+					},
+				},
+			});
+
+			authors.map(async (author) => {
+				await prisma.author.upsert({
+					where: {
+						id: author.id,
+					},
+					update: author,
+					create: author,
+				});
+			});
+
+			return responseResult(true, "Success");
 		} catch (error) {
 			return responseResult(false, errorText(error));
 		}

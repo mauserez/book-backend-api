@@ -2,7 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { Controller } from "../../core/Controller";
 
 import { AuthorService } from "./AuthorService";
-import { IAuthorEditPayload, IAuthorCreatePayload } from "./types";
+import {
+	IAuthorEditPayload,
+	IAuthorCreatePayload,
+	IAuthorsSavePayload,
+} from "./types";
 
 import { responseResult } from "../../helpers/resultHelper";
 import { v4 as uuidv4 } from "uuid";
@@ -21,6 +25,26 @@ export class AuthorController extends Controller {
 		next: NextFunction
 	) {
 		const result = await this.authorService.getAuthors();
+		return result;
+	}
+
+	async postAuthors(
+		req: Request<{}, {}, IAuthorsSavePayload>,
+		res: Response,
+		next: NextFunction
+	) {
+		const authors = req.body;
+		authors.map((author) => {
+			const { first_name, last_name } = author;
+			if (!first_name || !last_name) {
+				return responseResult(
+					false,
+					"Field first_name or last_name is empty, years_active is not required"
+				);
+			}
+		});
+
+		const result = await this.authorService.saveAuthors(authors);
 		return result;
 	}
 
