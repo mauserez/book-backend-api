@@ -99,7 +99,7 @@ export class UserController extends Controller {
 		res: Response,
 		next: NextFunction
 	) {
-		const { userId } = res.locals.userId;
+		const { userId } = res.locals;
 
 		const result = await this.userService.userBooks(userId);
 		return result;

@@ -1,4 +1,8 @@
-import { IRatingCreatePayload, IRatingEditPayload } from "./types";
+import {
+	IRatingCommentsPayload,
+	IRatingSavePayload,
+	IRatingEditPayload,
+} from "./types";
 import { RatingRepository } from "./RatingRepository";
 
 export class RatingService {
@@ -12,8 +16,10 @@ export class RatingService {
 		return await this.ratingRepository.getRating(id);
 	}
 
-	public async createRating(ratingPayload: IRatingCreatePayload) {
-		return this.ratingRepository.createRating(ratingPayload);
+	public async saveRating(
+		ratingPayload: Required<IRatingSavePayload & { user_id: string }>
+	) {
+		return this.ratingRepository.saveRating(ratingPayload);
 	}
 
 	public async editRating(ratingPayload: IRatingEditPayload) {
@@ -22,5 +28,12 @@ export class RatingService {
 
 	public async deleteRating(id: string) {
 		return await this.ratingRepository.deleteRating(id);
+	}
+
+	public async getBookComments(payload: IRatingCommentsPayload) {
+		const limit = 10;
+		const preparedPayload = { ...payload, page: payload.page || 1 };
+
+		return await this.ratingRepository.getBookComments(preparedPayload, limit);
 	}
 }

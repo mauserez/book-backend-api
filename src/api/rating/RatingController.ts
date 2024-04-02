@@ -2,7 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { Controller } from "../../core/Controller";
 
 import { RatingService } from "./RatingService";
-import { IRatingEditPayload, IRatingCreatePayload } from "./types";
+import {
+	IRatingEditPayload,
+	IRatingCommentsPayload,
+	IRatingSavePayload,
+} from "./types";
 
 import { responseResult } from "../../helpers/resultHelper";
 import { v4 as uuidv4 } from "uuid";
@@ -13,6 +17,19 @@ export class RatingController extends Controller {
 	constructor(ratingService: RatingService) {
 		super();
 		this.ratingService = ratingService;
+	}
+
+	async getBookComments(
+		req: Request<{}, {}, {}, IRatingCommentsPayload>,
+		res: Response,
+		next: NextFunction
+	) {
+		if (!req.query.book_id) {
+			return responseResult(false, "book_id is empty");
+		}
+
+		const result = await this.ratingService.getBookComments(req.query);
+		return result;
 	}
 
 	async getRating(
@@ -29,21 +46,24 @@ export class RatingController extends Controller {
 	}
 
 	async postRating(
-		req: Request<{}, {}, IRatingCreatePayload>,
+		req: Request<{}, {}, IRatingSavePayload>,
 		res: Response,
 		next: NextFunction
 	) {
 		const body = req.body;
-		if (!body.value || !body.user_id || !body.book_id) {
+		if (!body.value || !body.book_id) {
 			return responseResult(
 				false,
-				"Fields value or user_id or book_id is empty"
+				"Fields value or comment or book_id is empty"
 			);
 		}
 
-		const newRatingPayload = { ...req.body, id: uuidv4() };
+		const newRatingPayload = {
+			...req.body,
+			...{ id: body.id || uuidv4(), user_id: res.locals.userId as string },
+		};
 
-		const result = await this.ratingService.createRating(newRatingPayload);
+		const result = await this.ratingService.saveRating(newRatingPayload);
 		return result;
 	}
 

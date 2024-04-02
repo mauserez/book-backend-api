@@ -1,6 +1,10 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { RatingController } from "./RatingController";
-import { IRatingCreatePayload, IRatingEditPayload } from "./types";
+import {
+	IRatingSavePayload,
+	IRatingEditPayload,
+	IRatingCommentsPayload,
+} from "./types";
 import { AuthMiddleware } from "../../core/middleware";
 
 export class RatingRouter {
@@ -13,9 +17,9 @@ export class RatingRouter {
 
 		//rating по id
 		this._router.get(
-			"/rating/book/:id",
-			async (req: Request<{ id: string }>, res, next) => {
-				const rating = await ratingController.getRating(req, res, next);
+			"/rating/book-comments",
+			async (req: Request<{}, {}, {}, IRatingCommentsPayload>, res, next) => {
+				const rating = await ratingController.getBookComments(req, res, next);
 				res.send(rating);
 			}
 		);
@@ -29,15 +33,11 @@ export class RatingRouter {
 			}
 		);
 
-		//добавить оценку rating
+		//добавить комментарий с оценкой или изменить
 		this._router.post(
 			"/rating",
 			authMiddleware.verifyAuth,
-			async (
-				req: Request<{}, {}, IRatingCreatePayload>,
-				res: Response,
-				next
-			) => {
+			async (req: Request<{}, {}, IRatingSavePayload>, res: Response, next) => {
 				const result = await ratingController.postRating(req, res, next);
 				res.send(result);
 			}

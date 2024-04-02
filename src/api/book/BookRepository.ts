@@ -316,17 +316,17 @@ export class BookRepository {
 
 	public async getBookRating(bookId: string) {
 		try {
-			const book = await prisma.rating.aggregate({
+			const rating = await prisma.rating.aggregate({
 				_avg: {
 					value: true,
 				},
 				_count: true,
-				where: { id: bookId },
+				where: { book_id: bookId },
 			});
 
 			const result = {
-				rating: Number(book._avg),
-				reviews: Number(book._count),
+				rating: Number(rating._avg.value),
+				reviews: Number(rating._count),
 			};
 
 			return responseResult<IBookRating | null>(true, result);
