@@ -12,7 +12,6 @@ export class BookController extends Controller {
 	constructor(bookService: BookService) {
 		super();
 		this.bookService = bookService;
-		console.log("Инициализация BooksController");
 	}
 
 	async getBooks(

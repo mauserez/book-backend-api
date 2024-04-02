@@ -9,8 +9,8 @@ const prisma = new PrismaClient({
 	],
 });
 
-prisma.$on("query", async (e) => {
+/* prisma.$on("query", async (e) => {
 	console.log(`${e.query} ${e.params}`);
-});
+}); */
 
 export default prisma;
